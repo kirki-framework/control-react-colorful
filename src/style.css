@@ -1,0 +1,19 @@
+.customize-control-kirki-react-colorful .alpha-picker,
+.customize-control-kirki-react-colorful .block-picker,
+.customize-control-kirki-react-colorful .chrome-picker,
+.customize-control-kirki-react-colorful .circle-picker,
+.customize-control-kirki-react-colorful .compact-picker,
+.customize-control-kirki-react-colorful .github-picker,
+.customize-control-kirki-react-colorful .hue-picker,
+.customize-control-kirki-react-colorful .material-picker,
+.customize-control-kirki-react-colorful .photoshop-picker,
+.customize-control-kirki-react-colorful .sketch-picker,
+.customize-control-kirki-react-colorful .slider-picker,
+.customize-control-kirki-react-colorful .swatches-picker,
+.customize-control-kirki-react-colorful .twitter-picker {
+    margin-top: 12px;
+}
+
+.twitter-picker > div:last-child > span > div {
+  box-shadow: inset 0 0 1px 0px rgba(0,0,0,.2);
+}
