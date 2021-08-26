@@ -52,6 +52,7 @@ class ReactColorful extends Base {
 	 * @return void
 	 */
 	public function enqueue() {
+
 		parent::enqueue();
 
 		// Enqueue the script.
@@ -59,6 +60,7 @@ class ReactColorful extends Base {
 
 		// Enqueue the style.
 		wp_enqueue_style( 'kirki-control-react-colorful-style', URL::get_from_path( dirname( __DIR__ ) . '/style.css' ), [], self::$control_ver );
+
 	}
 
 	/**
@@ -74,27 +76,21 @@ class ReactColorful extends Base {
 		// Get the basics from the parent class.
 		parent::to_json();
 
-		// Set the default formComponent value to `RgbaColorPicker`.
+		// Set the default formComponent value to `HexColorPicker`.
 		if ( ! isset( $this->json['choices']['formComponent'] ) ) {
+			$this->json['choices']['formComponent'] = 'HexColorPicker';
+		}
+
+		// For backwards-compatibility - In v4, we can just `RgbaColorPicker` directly as the value of formComponent.
+		if ( isset( $this->json['choices']['alpha'] ) && true === $this->json['choices']['alpha'] ) {
 			$this->json['choices']['formComponent'] = 'RgbaColorPicker';
-		}
-
-		// For backwards-compatibility - In v4, we can just `RgbColorPicker` directly as the value of formComponent.
-		if ( isset( $this->json['choices']['alpha'] ) && false === $this->json['choices']['alpha'] ) {
-			$this->json['choices']['disableAlpha'] = true;
-			$this->json['choices']['formComponent'] = 'RgbColorPicker';
-		}
-
-		// ! The react-colorful doesn't support hue-only picker yet.
-		if ( isset( $this->json['mode'] ) && 'hue' === $this->json['mode'] ) {
-			$this->json['choices']['formComponent'] = 'HslColorPicker';
 		}
 
 		$value = isset( $this->json['value'] ) ? $this->json['value'] : '';
 
 		// If value is not a hex color, then change the formComponent.
-		if (!empty($value) && false === stripos($value, '#')) {
-			if (false !== stripos($value, 'rgba')) {
+		if ( ! empty( $value ) && false === stripos( $value, '#' ) ) {
+			if ( false !== stripos($value, 'rgba') ) {
 				$this->json['choices']['formComponent'] = 'RgbaColorPicker';
 			} elseif ( false !== stripos( $value, 'rgb' ) ) {
 				$this->json['choices']['formComponent'] = 'RgbColorPicker';
@@ -108,6 +104,12 @@ class ReactColorful extends Base {
 				$this->json['choices']['formComponent'] = 'HsvColorPicker';
 			}
 		}
+
+		// ! The react-colorful doesn't support hue-only picker yet.
+		if ( isset( $this->json['mode'] ) && 'hue' === $this->json['mode'] ) {
+			$this->json['choices']['formComponent'] = 'HslColorPicker';
+		}
+
 	}
 
 	/**

@@ -62,11 +62,12 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 
 		const form = <KirkiReactColorfulForm
 			{ ...control.params }
+			control={ control }
+			customizerSetting={ control.setting }
 			value={ value }
 			setNotificationContainer={ control.setNotificationContainer }
-			customizerSetting={ control.setting }
-			control={ control }
 		/>;
+
 		ReactDOM.render(
 			form,
 			control.container[0]

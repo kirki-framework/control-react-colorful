@@ -56,6 +56,7 @@ class ReactColorful extends Field {
 	 * @return array
 	 */
 	public function filter_setting_args( $args, $wp_customize ) {
+
 		if ( $args['settings'] === $this->args['settings'] ) {
 			$args = parent::filter_setting_args( $args, $wp_customize );
 
@@ -69,7 +70,9 @@ class ReactColorful extends Field {
 				}
 			}
 		}
+
 		return $args;
+
 	}
 
 	/**
@@ -82,11 +85,14 @@ class ReactColorful extends Field {
 	 * @return array
 	 */
 	public function filter_control_args( $args, $wp_customize ) {
+
 		if ( $args['settings'] === $this->args['settings'] ) {
 			$args         = parent::filter_control_args( $args, $wp_customize );
 			$args['type'] = 'kirki-react-colorful';
 		}
+
 		return $args;
+
 	}
 
 	/**
@@ -109,6 +115,7 @@ class ReactColorful extends Field {
 			if ( is_string( $matches[0] ) ) {
 				return $matches[0];
 			}
+
 			if ( is_array( $matches[0] ) && isset( $matches[0][0] ) ) {
 				return $matches[0][0];
 			}

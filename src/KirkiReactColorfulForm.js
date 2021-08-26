@@ -5,7 +5,9 @@ import reactCSS from 'reactcss';
 
 const KirkiReactColorfulForm = (props) => {
 
-	const handleChange = (color) => {
+	const handleChange = props.onChange ? props.onChange : (color) => {
+		console.log(props.choices.formComponent);
+
 		if (props.mode && 'hue' === props.mode) {
 			// ! The react-colorful doesn't support the hue mode yet - Let's treat it as hsl picker but use only the hue value.
 			wp.customize.control(props.customizerSetting.id).setting.set(color.h);
