@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import util from './util'
+import reactCSS from 'reactcss';
 
 const KirkiReactColorfulInput = (props) => {
-	const { control, customizerSetting, formComponent, onChange, color = "" } = props;
+	const { customizerSetting, formComponent, onChange, color = "" } = props;
   const [value, setValue] = useState(() => color);
 
   const handleChange = useCallback(
@@ -18,18 +19,37 @@ const KirkiReactColorfulInput = (props) => {
     [onChange]
   );
 
-	// Update the local state when `color` property value is changed
+	// Update the local state when `color` property value is changed.
 	useEffect(() => {
 		setValue(color);
 	}, [color]);
 
+	const styles = reactCSS({
+		'default': {
+			prefixContent: {
+				backgroundColor: value,
+			},
+		},
+	});
 
   return (
-    <input
-      value={value}
-      spellCheck="false" // the element should not be checked for spelling errors
-      onChange={handleChange}
-    />
+		<div class="kirki-react-colorful-input-field">
+			<div class="kirki-react-colorful-input-prefix">
+				<span class="kirki-react-colorful-input-prefix-content" style={styles.prefixContent}></span>
+			</div>
+			<div class="kirki-react-colorful-input-control">
+				<input
+					value={value}
+					spellCheck="false" // the element should not be checked for spelling errors.
+					onChange={handleChange}
+				/>
+			</div>
+			<div class="kirki-react-colorful-input-suffix">
+				<span class="kirki-react-colorful-input-suffix-content">
+					<span class="kirki-icon-code"></span>
+				</span>
+			</div>
+		</div>
   );
 };
 

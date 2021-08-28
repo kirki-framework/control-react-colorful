@@ -1,19 +1,92 @@
-.customize-control-kirki-react-colorful .alpha-picker,
-.customize-control-kirki-react-colorful .block-picker,
-.customize-control-kirki-react-colorful .chrome-picker,
-.customize-control-kirki-react-colorful .circle-picker,
-.customize-control-kirki-react-colorful .compact-picker,
-.customize-control-kirki-react-colorful .github-picker,
-.customize-control-kirki-react-colorful .hue-picker,
-.customize-control-kirki-react-colorful .material-picker,
-.customize-control-kirki-react-colorful .photoshop-picker,
-.customize-control-kirki-react-colorful .sketch-picker,
-.customize-control-kirki-react-colorful .slider-picker,
-.customize-control-kirki-react-colorful .swatches-picker,
-.customize-control-kirki-react-colorful .twitter-picker {
-    margin-top: 12px;
+.customize-control-kirki-react-colorful .colorPickerContainer {
+	background-color: #fff;
 }
 
-.twitter-picker > div:last-child > span > div {
-  box-shadow: inset 0 0 1px 0px rgba(0,0,0,.2);
+.customize-control-kirki-react-colorful .react-colorful {
+	width: 100%;
+}
+
+.customize-control-kirki-react-colorful .react-colorful__pointer {
+	width: 16px;
+	height: 16px;
+}
+
+.kirki-react-colorful-input-field {
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+	padding: 0 5px;
+	border-radius: 8px;
+	border: 1px solid #ddd;
+}
+
+.kirki-react-colorful-input-prefix,
+.kirki-react-colorful-input-control,
+.kirki-react-colorful-input-suffix {
+	display: inline-flex;
+	align-items: center;
+	height: 30px;
+}
+
+.kirki-react-colorful-input-prefix,
+.kirki-react-colorful-input-suffix {
+	width: 10%;
+}
+
+.kirki-react-colorful-input-prefix {
+	text-align: left;
+}
+
+.kirki-react-colorful-input-suffix {
+	text-align: right;
+}
+
+.kirki-react-colorful-input-control {
+	width: 80%;
+}
+
+.kirki-react-colorful-input-control input {
+	padding: 0 5px;
+	width: 100%;
+	color: #333;
+	border-width: 0;
+}
+
+.kirki-react-colorful-input-prefix-content {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+}
+
+/* @see https://css.gg/code */
+.kirki-icon-code {
+	transform: scale(1);
+}
+
+.kirki-icon-code,
+.kirki-icon-code::after,
+.kirki-icon-code::before {
+	box-sizing: border-box;
+	position: relative;
+	display: block;
+	width: 6px;
+	height: 20px;
+}
+
+.kirki-icon-code::after,
+.kirki-icon-code::before {
+	content: "";
+	position: absolute;
+	height: 6px;
+	border-left: 2px solid;
+	border-bottom: 2px solid;
+  border-color: #999;
+	transform: rotate(45deg) scaleY(1);
+	left: -3px;
+	top: 8px;
+}
+
+.kirki-icon-code::after {
+	transform: rotate(-45deg) scaleX(-1);
+  left: 3px
 }

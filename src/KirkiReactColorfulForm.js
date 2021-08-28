@@ -65,12 +65,8 @@ const KirkiReactColorfulForm = (props) => {
 			return (
 				<div>
 					{controlLabel}{controlDescription}{controlNotifications}
-					<div className="colorPickerContainer">
-						<HexColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handleChange}
-						/>
+					{summary}
+					<div style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
 						<KirkiReactColorfulInput
 							control={props.control}
 							customizerSetting={props.customizerSetting}
@@ -78,6 +74,11 @@ const KirkiReactColorfulForm = (props) => {
 							color={props.value}
 							expectedFormat={props.expectedFormat}
 							onChange={onInputChange}
+						/>
+						<HexColorPicker
+							{...props.choices}
+							color={pickerValue}
+							onChange={handleChange}
 						/>
 					</div>
 				</div>
@@ -86,13 +87,8 @@ const KirkiReactColorfulForm = (props) => {
 			return (
 				<div>
 					{controlLabel}{controlDescription}{controlNotifications}
-					<details style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
-						{summary}
-						<RgbColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handleChange}
-						/>
+					{summary}
+					<div style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
 						<KirkiReactColorfulInput
 							control={props.control}
 							customizerSetting={props.customizerSetting}
@@ -101,20 +97,20 @@ const KirkiReactColorfulForm = (props) => {
 							expectedFormat={props.expectedFormat}
 							onChange={onInputChange}
 						/>
-					</details>
+						<RgbColorPicker
+							{...props.choices}
+							color={pickerValue}
+							onChange={handleChange}
+						/>
+					</div>
 				</div>
 			);
 		case 'RgbaColorPicker':
 			return (
 				<div>
 					{controlLabel}{controlDescription}{controlNotifications}
-					<details style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
-						{summary}
-						<RgbaColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handleChange}
-						/>
+					{summary}
+					<div style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
 						<KirkiReactColorfulInput
 							control={props.control}
 							customizerSetting={props.customizerSetting}
@@ -123,7 +119,12 @@ const KirkiReactColorfulForm = (props) => {
 							expectedFormat={props.expectedFormat}
 							onChange={onInputChange}
 						/>
-					</details>
+						<RgbaColorPicker
+							{...props.choices}
+							color={pickerValue}
+							onChange={handleChange}
+						/>
+					</div>
 				</div>
 			);
 		case 'RgbStringColorPicker':
@@ -195,28 +196,28 @@ const KirkiReactColorfulForm = (props) => {
 			return (
 				<div>
 					{controlLabel}{controlDescription}{controlNotifications}
-					<details style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
-						{summary}
+					{summary}
+					<div style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
 						<HslaStringColorPicker
 							{...props.choices}
 							color={pickerValue}
 							onChange={handleChange}
 						/>
-					</details>
+					</div>
 				</div>
 			);
 		case 'HsvColorPicker':
 			return (
 				<div>
 					{controlLabel}{controlDescription}{controlNotifications}
-					<details style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
-						{summary}
+					{summary}
+					<div style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
 						<HsvColorPicker
 							{...props.choices}
 							color={pickerValue}
 							onChange={handleChange}
 						/>
-					</details>
+					</div>
 				</div>
 			);
 		case 'HsvaColorPicker':
@@ -249,31 +250,32 @@ const KirkiReactColorfulForm = (props) => {
 			return (
 				<div>
 					{controlLabel}{controlDescription}{controlNotifications}
-					<details style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
-						{summary}
+					{summary}
+					<div style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
 						<HsvaStringColorPicker
 							{...props.choices}
 							color={pickerValue}
 							onChange={handleChange}
 						/>
-					</details>
+					</div>
 				</div>
 			);
 		default:
 			return (
 				<div>
 					{controlLabel}{controlDescription}{controlNotifications}
-					<details style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
-						{summary}
+					{summary}
+					<div style={styles.details} className="colorPickerContainer" {...isSummaryDefaultOpen}>
 						<RgbaColorPicker
 							{...props.choices}
 							color={pickerValue}
 							onChange={handleChange}
 						/>
-					</details>
+					</div>
 				</div>
 			);
 	}
+
 };
 
 export default KirkiReactColorfulForm;
