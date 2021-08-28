@@ -1,47 +1,27 @@
 /* globals _, wp, React */
 import { HexColorPicker, RgbColorPicker, RgbaColorPicker, RgbStringColorPicker, RgbaStringColorPicker, HslColorPicker, HslaColorPicker, HslStringColorPicker, HslaStringColorPicker, HsvColorPicker, HsvaColorPicker, HsvStringColorPicker, HsvaStringColorPicker } from "react-colorful";
-
 import reactCSS from 'reactcss';
+import KirkiReactColorfulInput from "./KirkiReactColorfulInput";
+import util from './util';
 
 const KirkiReactColorfulForm = (props) => {
 
-	const handleChange = props.onChange ? props.onChange : (color) => {
-		console.log(props.choices.formComponent);
+	let pickerValue = util.convertColor.forPicker(props.value, props.choices.formComponent);
 
+	const handleChange = props.onChange ? props.onChange : (color) => {
 		if (props.mode && 'hue' === props.mode) {
 			// ! The react-colorful doesn't support the hue mode yet - Let's treat it as hsl picker but use only the hue value.
 			wp.customize.control(props.customizerSetting.id).setting.set(color.h);
 			return;
 		}
 
-		let renderedValue = '';
+		const inputValue = util.convertColor.forInput(color, props.expectedFormat, props.choices.formComponent);
+		wp.customize.control(props.customizerSetting.id).setting.set(inputValue);
+	}
 
-		switch (props.choices.formComponent) {
-			case 'RgbColorPicker':
-				renderedValue = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-				break;
-
-			case 'RgbaColorPicker':
-				renderedValue = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + color.a + ')';
-
-			case 'HslColorPicker':
-				renderedValue = 'hsl(' + color.h + ',' + color.s + ',' + color.l + '%)';
-
-			case 'HslaColorPicker':
-				renderedValue = 'hsla(' + color.h + ',' + color.s + ',' + color.l + '%,' + color.a + ')';
-
-			case 'HsvColorPicker':
-				renderedValue = 'hsl(' + color.h + ',' + color.s + ',' + color.v + '%)';
-
-			case 'HsvaColorPicker':
-				renderedValue = 'hsla(' + color.h + ',' + color.s + ',' + color.v + '%,' + color.a + ')';
-
-			default:
-				renderedValue = color;
-				break;
-		}
-
-		wp.customize.control(props.customizerSetting.id).setting.set(renderedValue);
+	const onInputChange = (valueForPicker, valueForInput) => {
+		pickerValue = valueForPicker;
+		wp.customize.control(props.customizerSetting.id).setting.set(valueForInput);
 	};
 
 	const styles = reactCSS({
@@ -88,8 +68,16 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<HexColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
+						/>
+						<KirkiReactColorfulInput
+							control={props.control}
+							customizerSetting={props.customizerSetting}
+							formComponent={props.choices.formComponent}
+							color={props.value}
+							expectedFormat={props.expectedFormat}
+							onChange={onInputChange}
 						/>
 					</div>
 				</div>
@@ -102,8 +90,16 @@ const KirkiReactColorfulForm = (props) => {
 						{summary}
 						<RgbColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
+						/>
+						<KirkiReactColorfulInput
+							control={props.control}
+							customizerSetting={props.customizerSetting}
+							formComponent={props.choices.formComponent}
+							color={props.value}
+							expectedFormat={props.expectedFormat}
+							onChange={onInputChange}
 						/>
 					</details>
 				</div>
@@ -116,8 +112,16 @@ const KirkiReactColorfulForm = (props) => {
 						{summary}
 						<RgbaColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
+						/>
+						<KirkiReactColorfulInput
+							control={props.control}
+							customizerSetting={props.customizerSetting}
+							formComponent={props.choices.formComponent}
+							color={props.value}
+							expectedFormat={props.expectedFormat}
+							onChange={onInputChange}
 						/>
 					</details>
 				</div>
@@ -129,7 +133,7 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<RgbStringColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</div>
@@ -142,7 +146,7 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<RgbaStringColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</div>
@@ -155,7 +159,7 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<HslColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</div>
@@ -168,7 +172,7 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<HslaColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</div>
@@ -181,7 +185,7 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<HslStringColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</div>
@@ -195,7 +199,7 @@ const KirkiReactColorfulForm = (props) => {
 						{summary}
 						<HslaStringColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</details>
@@ -209,7 +213,7 @@ const KirkiReactColorfulForm = (props) => {
 						{summary}
 						<HsvColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</details>
@@ -222,7 +226,7 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<HsvaColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</div>
@@ -235,7 +239,7 @@ const KirkiReactColorfulForm = (props) => {
 					<div className="colorPickerContainer">
 						<HsvStringColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</div>
@@ -249,7 +253,7 @@ const KirkiReactColorfulForm = (props) => {
 						{summary}
 						<HsvaStringColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</details>
@@ -263,7 +267,7 @@ const KirkiReactColorfulForm = (props) => {
 						{summary}
 						<RgbaColorPicker
 							{...props.choices}
-							color={props.value}
+							color={pickerValue}
 							onChange={handleChange}
 						/>
 					</details>
