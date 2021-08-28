@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
-import util from './util'
+import { useState, useEffect, useCallback, useRef } from "react";
 import reactCSS from 'reactcss';
+import util from './util'
+import useClickOutside from "./useClickOutside";
 
 const KirkiReactColorfulInput = (props) => {
-	const { customizerSetting, formComponent, onChange, color = "" } = props;
+	const { customizerSetting, formComponent, onChange, color = "", pickerRef, togglePickerHandler, openPickerHandler, closePickerHandler } = props;
   const [value, setValue] = useState(() => color);
 
   const handleChange = useCallback(
@@ -24,6 +25,10 @@ const KirkiReactColorfulInput = (props) => {
 		setValue(color);
 	}, [color]);
 
+	const inputRef = useRef(null);
+
+	useClickOutside(inputRef, pickerRef, closePickerHandler);
+
 	const styles = reactCSS({
 		'default': {
 			prefixContent: {
@@ -33,19 +38,16 @@ const KirkiReactColorfulInput = (props) => {
 	});
 
   return (
-		<div class="kirki-react-colorful-input-field">
-			<div class="kirki-react-colorful-input-prefix">
-				<span class="kirki-react-colorful-input-prefix-content" style={styles.prefixContent}></span>
-			</div>
+		<div class="kirki-react-colorful-input-field" ref={inputRef}>
 			<div class="kirki-react-colorful-input-control">
+				<span class="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={togglePickerHandler}></span>
 				<input
 					value={value}
 					spellCheck="false" // the element should not be checked for spelling errors.
+					onClick={openPickerHandler}
 					onChange={handleChange}
 				/>
-			</div>
-			<div class="kirki-react-colorful-input-suffix">
-				<span class="kirki-react-colorful-input-suffix-content">
+				<span class="kirki-react-colorful-input-format-switcher">
 					<span class="kirki-icon-code"></span>
 				</span>
 			</div>
