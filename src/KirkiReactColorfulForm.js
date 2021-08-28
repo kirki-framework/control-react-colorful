@@ -8,21 +8,34 @@ import util from './util';
 
 const KirkiReactColorfulForm = (props) => {
 
-	let pickerValue = util.convertColor.forPicker(props.value, props.choices.formComponent);
+	// Use local state for the value of the picker.
+	const [pickerValue, setPickerValue] = useState(() => {
+		return util.convertColor.forPicker(props.value, props.choices.formComponent);
+	});
 
-	const handleChange = props.onChange ? props.onChange : (color) => {
+	// Use local state for the value of the input.
+	const [inputValue, setInputValue] = useState(() => {
+		return util.convertColor.forPicker(props.value, props.expectedFormat, props.choices.formComponent);
+	});
+
+	const handlePickerChange = props.onChange ? props.onChange : (selectedColor) => {
 		if (props.mode && 'hue' === props.mode) {
 			// ! The react-colorful doesn't support the hue mode yet - Let's treat it as hsl picker but use only the hue value.
-			wp.customize.control(props.customizerSetting.id).setting.set(color.h);
+			wp.customize.control(props.customizerSetting.id).setting.set(selectedColor.h);
 			return;
 		}
 
-		const inputValue = util.convertColor.forInput(color, props.expectedFormat, props.choices.formComponent);
-		wp.customize.control(props.customizerSetting.id).setting.set(inputValue);
+		const valueForInput = util.convertColor.forInput(selectedColor, props.expectedFormat, props.choices.formComponent);
+
+		wp.customize.control(props.customizerSetting.id).setting.set(valueForInput);
+
+		// Notify the input component to set new value.
+		setInputValue(valueForInput);
 	}
 
-	const onInputChange = (valueForPicker, valueForInput) => {
-		pickerValue = valueForPicker;
+	const handleInputChange = (valueForInput, valueForPicker) => {
+		// Notify the picker component to set new value.
+		setPickerValue(valueForPicker);
 		wp.customize.control(props.customizerSetting.id).setting.set(valueForInput);
 	};
 
@@ -31,21 +44,6 @@ const KirkiReactColorfulForm = (props) => {
 			summary: {
 				display: 'flex',
 				alignItems: 'center',
-			},
-
-			summaryColor: {
-				background: props.value,
-				display: 'block',
-				width: '40px',
-				height: '2em',
-				borderRadius: '4px',
-				border: '1px solid rgba(0,0,0,.2)',
-			},
-
-			summaryText: {
-				color: '#a0a0a0',
-				padding: '0 12px',
-				fontFamily: 'Menlo, Consolas, monaco, monospace'
 			}
 		},
 	});
@@ -66,19 +64,18 @@ const KirkiReactColorfulForm = (props) => {
 
 	const openPicker = () => {
 		if (!isPickerOpen) {
-			console.log('opening');
 			setIsPickerOpen(true);
 		}
 	}
 
 	const closePicker = () => {
 		if (isPickerOpen) {
-			console.log('closing');
 			setIsPickerOpen(false);
 		}
 	}
 
 	const pickerRef = useRef(null);
+	const useAlpha = props.choices.alpha ? true : false;
 
 	switch (props.choices.formComponent) {
 		case 'HexColorPicker':
@@ -90,18 +87,19 @@ const KirkiReactColorfulForm = (props) => {
 						control={props.control}
 						customizerSetting={props.customizerSetting}
 						formComponent={props.choices.formComponent}
-						color={props.value}
+						alpha={useAlpha}
+						color={inputValue}
 						expectedFormat={props.expectedFormat}
 						togglePickerHandler={togglePicker}
 						openPickerHandler={openPicker}
 						closePickerHandler={closePicker}
-						onChange={onInputChange}
+						onChange={handleInputChange}
 					/>
 					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
 						<HexColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -115,18 +113,19 @@ const KirkiReactColorfulForm = (props) => {
 						control={props.control}
 						customizerSetting={props.customizerSetting}
 						formComponent={props.choices.formComponent}
-						color={props.value}
+						alpha={useAlpha}
+						color={inputValue}
 						expectedFormat={props.expectedFormat}
 						togglePickerHandler={togglePicker}
 						openPickerHandler={openPicker}
 						closePickerHandler={closePicker}
-						onChange={onInputChange}
+						onChange={handleInputChange}
 					/>
 					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
 						<RgbColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -140,18 +139,19 @@ const KirkiReactColorfulForm = (props) => {
 						control={props.control}
 						customizerSetting={props.customizerSetting}
 						formComponent={props.choices.formComponent}
-						color={props.value}
+						alpha={useAlpha}
+						color={inputValue}
 						expectedFormat={props.expectedFormat}
 						togglePickerHandler={togglePicker}
 						openPickerHandler={openPicker}
 						closePickerHandler={closePicker}
-						onChange={onInputChange}
+						onChange={handleInputChange}
 					/>
 					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
 						<RgbaColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -164,7 +164,7 @@ const KirkiReactColorfulForm = (props) => {
 						<RgbStringColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -177,7 +177,7 @@ const KirkiReactColorfulForm = (props) => {
 						<RgbaStringColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -190,7 +190,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HslColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -203,7 +203,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HslaColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -216,7 +216,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HslStringColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -229,7 +229,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HslaStringColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -242,7 +242,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HsvColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -255,7 +255,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HsvaColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -268,7 +268,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HsvStringColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -281,7 +281,7 @@ const KirkiReactColorfulForm = (props) => {
 						<HsvaStringColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>
@@ -294,7 +294,7 @@ const KirkiReactColorfulForm = (props) => {
 						<RgbaColorPicker
 							{...props.choices}
 							color={pickerValue}
-							onChange={handleChange}
+							onChange={handlePickerChange}
 						/>
 					</div>
 				</div>

@@ -43,9 +43,14 @@ util.convertColor.forPicker = (value, formComponent) => {
 util.convertColor.forInput = (value, expectedFormat, formComponent) => {
 	let convertedValue;
 
+	if (!formComponent) {
+		formComponent = expectedFormat.charAt(0).toUpperCase() + expectedFormat.slice(1) + 'ColorPicker';
+	}
+
 	switch (formComponent) {
 		case 'RgbColorPicker':
 			convertedValue = 'hex' === expectedFormat ? colord(value).toHex() : colord(value).toRgbString();
+
 			break;
 
 		case 'RgbaColorPicker':
@@ -55,6 +60,11 @@ util.convertColor.forInput = (value, expectedFormat, formComponent) => {
 				convertedValue = colord(value).toRgbString();
 			} else {
 				convertedValue = 'hex' === expectedFormat ? colord(value).toHex() : colord(value).toRgbString();
+
+				if (convertedValue.includes('rgb') && !convertedValue.includes('rgba')) {
+					convertedValue = convertedValue.replace('rgb', 'rgba');
+					convertedValue = convertedValue.replace(')', ', 1)');
+				}
 			}
 
 			break;

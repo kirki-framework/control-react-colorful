@@ -19,7 +19,6 @@ const useClickOutside = (inputRef, pickerRef, closeHandler) => {
 			// Do nothing if clicking pickerRef's element or descendent elements
 			if (!pickerRef.current || pickerRef.current.contains(event.target)) return;
 
-			console.log('running closeHandler');
 			closeHandler();
 		};
 
