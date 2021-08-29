@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { HexColorPicker, RgbColorPicker, RgbaColorPicker, RgbStringColorPicker, RgbaStringColorPicker, HslColorPicker, HslaColorPicker, HslStringColorPicker, HslaStringColorPicker, HsvColorPicker, HsvaColorPicker, HsvStringColorPicker, HsvaStringColorPicker } from "react-colorful";
-import reactCSS from 'reactcss';
 import KirkiReactColorfulInput from "./KirkiReactColorfulInput";
 import util from './util';
 
@@ -10,43 +9,34 @@ const KirkiReactColorfulForm = (props) => {
 
 	// Use local state for the value of the picker.
 	const [pickerValue, setPickerValue] = useState(() => {
-		return util.convertColor.forPicker(props.value, props.choices.formComponent);
+		return util.convertColor.forPicker(props.value, props.pickerComponent);
 	});
 
 	// Use local state for the value of the input.
 	const [inputValue, setInputValue] = useState(() => {
-		return util.convertColor.forPicker(props.value, props.expectedFormat, props.choices.formComponent);
+		return util.convertColor.forInput(props.value, props.pickerComponent, props.choices);
 	});
 
-	const handlePickerChange = props.onChange ? props.onChange : (selectedColor) => {
+	const handlePickerChange = props.onChange ? props.onChange : (color) => {
 		if (props.mode && 'hue' === props.mode) {
-			// ! The react-colorful doesn't support the hue mode yet - Let's treat it as hsl picker but use only the hue value.
-			wp.customize.control(props.customizerSetting.id).setting.set(selectedColor.h);
+			// ! The react-colorful doesn't support the hue-only picker yet - Let's treat it as hsl picker but use only the hue value.
+			wp.customize.control(props.customizerSetting.id).setting.set(color.h);
 			return;
 		}
 
-		const valueForInput = util.convertColor.forInput(selectedColor, props.expectedFormat, props.choices.formComponent);
+		const valueForInput = util.convertColor.forInput(color, props.pickerComponent, props.choices);
 
 		wp.customize.control(props.customizerSetting.id).setting.set(valueForInput);
 
-		// Notify the input component to set new value.
+		// Notify the input component to set a new value.
 		setInputValue(valueForInput);
 	}
 
 	const handleInputChange = (valueForInput, valueForPicker) => {
-		// Notify the picker component to set new value.
+		// Notify the picker component to set a new value.
 		setPickerValue(valueForPicker);
 		wp.customize.control(props.customizerSetting.id).setting.set(valueForInput);
 	};
-
-	const styles = reactCSS({
-		'default': {
-			summary: {
-				display: 'flex',
-				alignItems: 'center',
-			}
-		},
-	});
 
 	let controlLabel = <label className="customize-control-title">{props.label}</label>;
 	let controlDescription = <span className="description customize-control-description" dangerouslySetInnerHTML={{ __html: props.description }}></span>;
@@ -63,243 +53,86 @@ const KirkiReactColorfulForm = (props) => {
 	}
 
 	const openPicker = () => {
-		if (!isPickerOpen) {
-			setIsPickerOpen(true);
-		}
+		if (!isPickerOpen) setIsPickerOpen(true);
 	}
 
 	const closePicker = () => {
-		if (isPickerOpen) {
-			setIsPickerOpen(false);
-		}
+		if (isPickerOpen) setIsPickerOpen(false);
 	}
 
-	const pickerRef = useRef(null);
-	const useAlpha = props.choices.alpha ? true : false;
+	let KirkiPickerComponent;
 
-	switch (props.choices.formComponent) {
+	// We can't just render `props.pickerComponent` directly, we need these lines so that the compiler will import them.
+	switch (props.pickerComponent) {
 		case 'HexColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<KirkiReactColorfulInput
-						pickerRef={pickerRef}
-						control={props.control}
-						customizerSetting={props.customizerSetting}
-						formComponent={props.choices.formComponent}
-						alpha={useAlpha}
-						color={inputValue}
-						expectedFormat={props.expectedFormat}
-						togglePickerHandler={togglePicker}
-						openPickerHandler={openPicker}
-						closePickerHandler={closePicker}
-						onChange={handleInputChange}
-					/>
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HexColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HexColorPicker;
+			break;
 		case 'RgbColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<KirkiReactColorfulInput
-						pickerRef={pickerRef}
-						control={props.control}
-						customizerSetting={props.customizerSetting}
-						formComponent={props.choices.formComponent}
-						alpha={useAlpha}
-						color={inputValue}
-						expectedFormat={props.expectedFormat}
-						togglePickerHandler={togglePicker}
-						openPickerHandler={openPicker}
-						closePickerHandler={closePicker}
-						onChange={handleInputChange}
-					/>
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<RgbColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = RgbColorPicker;
+			break;
 		case 'RgbaColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<KirkiReactColorfulInput
-						pickerRef={pickerRef}
-						control={props.control}
-						customizerSetting={props.customizerSetting}
-						formComponent={props.choices.formComponent}
-						alpha={useAlpha}
-						color={inputValue}
-						expectedFormat={props.expectedFormat}
-						togglePickerHandler={togglePicker}
-						openPickerHandler={openPicker}
-						closePickerHandler={closePicker}
-						onChange={handleInputChange}
-					/>
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<RgbaColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = RgbaColorPicker;
+			break;
 		case 'RgbStringColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<RgbStringColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = RgbStringColorPicker;
+			break;
 		case 'RgbaStringColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<RgbaStringColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = RgbaStringColorPicker;
+			break;
 		case 'HslColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HslColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HslColorPicker;
+			break;
 		case 'HslaColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HslaColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HslaColorPicker;
+			break;
 		case 'HslStringColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HslStringColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HslStringColorPicker;
+			break;
 		case 'HslaStringColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HslaStringColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HslaStringColorPicker;
+			break;
 		case 'HsvColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HsvColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HsvColorPicker;
+			break;
 		case 'HsvaColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HsvaColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HsvaColorPicker;
+			break;
 		case 'HsvStringColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HsvStringColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HsvStringColorPicker;
+			break;
 		case 'HsvaStringColorPicker':
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<HsvaStringColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HsvaStringColorPicker;
+			break;
 		default:
-			return (
-				<div class="kirki-control-content">
-					{controlLabel}{controlDescription}{controlNotifications}
-					<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
-						<RgbaColorPicker
-							{...props.choices}
-							color={pickerValue}
-							onChange={handlePickerChange}
-						/>
-					</div>
-				</div>
-			);
+			KirkiPickerComponent = HexColorPicker;
+			break;
 	}
+
+	// Reference to the colorPickerContainer div.
+	const pickerRef = useRef(null);
+
+	return (
+		<div className="kirki-control-content">
+			{controlLabel}{controlDescription}{controlNotifications}
+			<KirkiReactColorfulInput
+				pickerRef={pickerRef}
+				formComponent={props.choices.formComponent}
+				pickerComponent={props.pickerComponent}
+				alpha={props.choices.alpha}
+				color={inputValue}
+				togglePickerHandler={togglePicker}
+				openPickerHandler={openPicker}
+				closePickerHandler={closePicker}
+				onChange={handleInputChange}
+			/>
+			<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
+				<KirkiPickerComponent
+					color={pickerValue}
+					onChange={handlePickerChange}
+				/>
+			</div>
+		</div>
+	);
 
 };
 

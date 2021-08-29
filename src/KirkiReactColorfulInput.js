@@ -5,16 +5,18 @@ import util from './util'
 import useClickOutside from "./useClickOutside";
 
 const KirkiReactColorfulInput = (props) => {
-	const { formComponent, expectedFormat, onChange, color = "", pickerRef, togglePickerHandler, openPickerHandler, closePickerHandler } = props;
+	const { onChange, color = "" } = props;
 
 	const [value, setValue] = useState(() => color);
 
 	const handleChange = useCallback(
 		(e) => {
 			const valueForInput = e.target.value;
-			const valueForPicker = util.convertColor.forPicker(valueForInput, formComponent);
+			const valueForPicker = util.convertColor.forPicker(valueForInput, props.pickerComponent);
 
 			setValue(valueForInput);
+
+			// Run onChange handler passed by KirkiReactColorfulForm component.
 			onChange(valueForInput, valueForPicker);
 		},
 		[onChange]
@@ -22,15 +24,37 @@ const KirkiReactColorfulInput = (props) => {
 
 	// Update the local state when `color` property value is changed.
 	useEffect(() => {
-		setValue(util.convertColor.forInput(color, expectedFormat, formComponent));
+		// We don't need to convert the color since it's already converted from the parent componenent.
+		setValue(color);
 	}, [color]);
 
+	// Reference to the input field div.
 	const inputRef = useRef(null);
 
-	useClickOutside(inputRef, pickerRef, closePickerHandler);
+	// Handle outside click to close the picker popup.
+	useClickOutside(inputRef, props.pickerRef, props.closePickerHandler);
 
+	// This is for the color switcher stuff.
+	let useAlpha = false;
+
+	/**
+	 * If formComponent is set when setting up Kirki fields, it checks for it.
+	 * We ignore the "alpha" choice when formComponent is defined.
+	 */
+	if (props.formComponent) {
+		if ('RgbaColorPicker' === props.formComponent || 'HslaColorPicker' === props.formComponent || 'HsvaColorControl' === props.formComponent) {
+			useAlpha = true;
+		} else {
+			useAlpha = false;
+		}
+	} else {
+		useAlpha = props.alpha ? true : false;
+	}
+
+	// Currently, we only support these colors for the picker.
 	const availableFormats = ['hex', 'rgb', 'rgba', 'hsl', 'hsla'];
 
+	// But for the format switcher, we only support these colors when useAlpha is true.
 	const alphaFormats = ['hex', 'rgba', 'hsla'];
 	const alphaConversion = {
 		hex: 'hex',
@@ -40,6 +64,7 @@ const KirkiReactColorfulInput = (props) => {
 		hsla: 'hsla',
 	};
 
+	// And when useAlpha is false, we only support these colors for the format switcher.
 	const nonAlphaFormats = ['hex', 'rgb', 'hsl'];
 	const nonAlphaConversion = {
 		hex: 'hex',
@@ -50,19 +75,27 @@ const KirkiReactColorfulInput = (props) => {
 	};
 
 	const switchFormat = () => {
+		// Get the current value format using colord.
 		let prevFormat = getFormat(value);
+
+		// If the format is not listed under `availableFormats`, then stop here.
 		if (!availableFormats.includes(prevFormat)) return;
 
-		const conversion = props.alpha ? alphaConversion : nonAlphaConversion;
-		const formats = props.alpha ? alphaFormats : nonAlphaFormats;
+		const conversion = useAlpha ? alphaConversion : nonAlphaConversion;
+		const formats = useAlpha ? alphaFormats : nonAlphaFormats;
 
+		// The format before we switch.
 		prevFormat = conversion[prevFormat];
+
 		const prevFormatIndex = formats.indexOf(prevFormat);
+
 		let nextFormatIndex = prevFormatIndex + 1;
 		nextFormatIndex = nextFormatIndex >= formats.length ? 0 : nextFormatIndex;
-		const nextFormat = formats[nextFormatIndex];
 
-		setValue(util.convertColor.forInput(value, nextFormat, null));
+		const nextFormat = formats[nextFormatIndex];
+		const expectedPicker = nextFormat.charAt(0).toUpperCase() + nextFormat.slice(1) + 'ColorPicker';
+
+		setValue(util.convertColor.forInput(value, expectedPicker, {}));
 	}
 
 	const styles = reactCSS({
@@ -74,17 +107,17 @@ const KirkiReactColorfulInput = (props) => {
 	});
 
 	return (
-		<div class="kirki-react-colorful-input-field" ref={inputRef}>
-			<div class="kirki-react-colorful-input-control">
-				<span class="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={togglePickerHandler}></span>
+		<div className="kirki-react-colorful-input-field" ref={inputRef}>
+			<div className="kirki-react-colorful-input-control">
+				<span className="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></span>
 				<input
 					value={value}
 					spellCheck="false" // the element should not be checked for spelling errors.
-					onClick={openPickerHandler}
+					onClick={props.openPickerHandler}
 					onChange={handleChange}
 				/>
-				<span class="kirki-react-colorful-input-format-switcher" onClick={switchFormat}>
-					<span class="kirki-icon-code"></span>
+				<span className="kirki-react-colorful-input-format-switcher" onClick={switchFormat}>
+					<span className="kirki-icon-code"></span>
 				</span>
 			</div>
 		</div>

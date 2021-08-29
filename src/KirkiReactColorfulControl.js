@@ -54,15 +54,21 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 	 *
 	 * This is called from the Control#embed() method in the parent class.
 	 *
+	 * ? Bagus: Noob question. This function is called even in every color drag. Is it how react component works here? :D
+	 *
 	 * @returns {void}
 	 */
 	renderContent: function renderContent() {
 		const control = this;
 
+		// We need to define the pickerComponent no matter formComponent is set or not.
+		const pickerComponent = control.params.choices.formComponent ? control.params.choices.formComponent : (control.params.choices.alpha ? 'RgbaColorPicker' : 'HexColorPicker');
+
 		const form = <KirkiReactColorfulForm
 			{ ...control.params }
 			control={ control }
 			customizerSetting={ control.setting }
+			pickerComponent={ pickerComponent }
 			value={ control.setting.get() }
 			setNotificationContainer={ control.setNotificationContainer }
 		/>;

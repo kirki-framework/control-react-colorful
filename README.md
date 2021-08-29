@@ -1,7 +1,7 @@
 # kirki-framework/control-react-colorful
 
-This is a simple control for the WordPress Customizer using [react-colorful](https://github.com/omgovich/react-colorful).  
-Inspired by [Gutenberg change](https://github.com/WordPress/gutenberg/pull/33714), we decided to use _react-colorful_ instead of _react-color_ for Kirki 4.  
+This is a simple control for the WordPress Customizer using [react-colorful](https://github.com/omgovich/react-colorful).
+Inspired by [Gutenberg change](https://github.com/WordPress/gutenberg/pull/33714), we decided to use _react-colorful_ instead of _react-color_ for Kirki 4.
 It has simpler interface and [much smaller bundle size](https://github.com/omgovich/react-colorful#why-react-colorful).
 
 ## Installation
@@ -9,15 +9,15 @@ It has simpler interface and [much smaller bundle size](https://github.com/omgov
 To install this package use `composer`:
 
 ```bash
-composer require kirki-framework/control-react-colorful:dev-bagus
+composer require kirki-framework/control-react-colorful:dev-nightly
 ```
 
 **NOTE**:
 If you get errors with the package dependencies, please run the following first:
 ```bash
-composer require kirki-framework/control-base:dev-bagus
-composer require kirki-framework/field:dev-bagus
-composer require kirki-framework/url-getter:dev-bagus
+composer require kirki-framework/control-base:dev-nightly
+composer require kirki-framework/field:dev-nightly
+composer require kirki-framework/url-getter:dev-nightly
 ```
 
 Until Kirki v4.0 is released some of these dependencies may not have a tag released, so in the meantime the above will allow you to install and use everything.
@@ -85,10 +85,8 @@ And in the `formComponent` argument you can define the type of control you want,
 * `RgbaColorPicker`
 * `HslColorPicker`
 * `HslaColorPicker`
-* `HsvColorPicker`
-* `HsvaColorPicker`
 
-Their value will be saved as string in database.  
+Their value will be saved as string in database.
 For information about the arguments you can use, please refer to the [react-colorful](https://github.com/omgovich/react-colorful/) documentation.
 
 ## Development

@@ -88,31 +88,6 @@ class ReactColorful extends Base {
 
 		$value = isset( $this->json['value'] ) ? $this->json['value'] : '';
 
-		$this->json['expectedFormat'] = 'hex';
-
-		// If value is not a hex color, then change the formComponent.
-		if ( ! empty( $value ) && false === stripos( $value, '#' ) ) {
-			if ( false !== stripos($value, 'rgba') ) {
-				$this->json['expectedFormat'] = 'rgba';
-				$this->json['choices']['formComponent'] = 'RgbaColorPicker';
-			} elseif ( false !== stripos( $value, 'rgb' ) ) {
-				$this->json['expectedFormat'] = 'rgb';
-				$this->json['choices']['formComponent'] = 'RgbColorPicker';
-			} elseif ( false !== stripos( $value, 'hsla' ) ) {
-				$this->json['expectedFormat'] = 'hsla';
-				$this->json['choices']['formComponent'] = 'HslaColorPicker';
-			} elseif ( false !== stripos( $value, 'hsl' ) ) {
-				$this->json['expectedFormat'] = 'hsl';
-				$this->json['choices']['formComponent'] = 'HslColorPicker';
-			} elseif ( false !== stripos( $value, 'hsva' ) ) {
-				$this->json['expectedFormat'] = 'hsva';
-				$this->json['choices']['formComponent'] = 'HsvaColorPicker';
-			} elseif ( false !== stripos( $value, 'hsv' ) ) {
-				$this->json['expectedFormat'] = 'hsv';
-				$this->json['choices']['formComponent'] = 'HsvColorPicker';
-			}
-		}
-
 		// ! The react-colorful doesn't support hue-only picker yet.
 		if ( isset( $this->json['mode'] ) && 'hue' === $this->json['mode'] ) {
 			$this->json['choices']['formComponent'] = 'HslColorPicker';
