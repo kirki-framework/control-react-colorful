@@ -29,42 +29,40 @@ const KirkiReactColorfulInput = (props) => {
 
 	useClickOutside(inputRef, pickerRef, closePickerHandler);
 
-	const availableFormats = ['hex', 'rgb', 'rgba'];
-	const nonAlphaFormats = ['hex', 'rgb'];
+	const availableFormats = ['hex', 'rgb', 'rgba', 'hsl', 'hsla'];
+
+	const alphaFormats = ['hex', 'rgba', 'hsla'];
+	const alphaConversion = {
+		hex: 'hex',
+		rgb: 'rgba',
+		rgba: 'rgba',
+		hsl: 'hsla',
+		hsla: 'hsla',
+	};
+
+	const nonAlphaFormats = ['hex', 'rgb', 'hsl'];
 	const nonAlphaConversion = {
 		hex: 'hex',
 		rgb: 'rgb',
-		rgba: 'rgb'
+		rgba: 'hex',
+		hsl: 'hsl',
+		hsla: 'hex',
 	};
 
 	const switchFormat = () => {
 		let prevFormat = getFormat(value);
 		if (!availableFormats.includes(prevFormat)) return;
 
-		let nextFormat;
-		let prevFormatIndex;
-		let nextFormatIndex;
+		const conversion = props.alpha ? alphaConversion : nonAlphaConversion;
+		const formats = props.alpha ? alphaFormats : nonAlphaFormats;
 
-		// If 'alpha' argument in 'choices' is enabled/is true.
-		if (props.alpha) {
-			prevFormatIndex = availableFormats.indexOf(prevFormat);
-			nextFormatIndex = prevFormatIndex + 1;
-			nextFormatIndex = nextFormatIndex >= availableFormats.length ? 0 : nextFormatIndex;
-			nextFormat = availableFormats[nextFormatIndex];
-		} else {
-			prevFormat = nonAlphaConversion[prevFormat];
-			prevFormatIndex = nonAlphaFormats.indexOf(prevFormat);
-			nextFormatIndex = prevFormatIndex + 1;
-			nextFormatIndex = nextFormatIndex >= nonAlphaFormats.length ? 0 : nextFormatIndex;
-			nextFormat = nonAlphaFormats[nextFormatIndex];
-		}
+		prevFormat = conversion[prevFormat];
+		const prevFormatIndex = formats.indexOf(prevFormat);
+		let nextFormatIndex = prevFormatIndex + 1;
+		nextFormatIndex = nextFormatIndex >= formats.length ? 0 : nextFormatIndex;
+		const nextFormat = formats[nextFormatIndex];
 
-		const newValue = util.convertColor.forInput(value, nextFormat, null);
-
-		console.log(prevFormat);
-		console.log(nextFormat);
-
-		setValue(newValue);
+		setValue(util.convertColor.forInput(value, nextFormat, null));
 	}
 
 	const styles = reactCSS({
