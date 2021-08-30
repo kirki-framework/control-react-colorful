@@ -56,14 +56,7 @@ util.convertColor.forPicker = (value, pickerComponent , opts = {}) => {
 			break;
 
 		case 'HslStringColorPicker':
-			// When using hue-only mode.
-			if ('hue' === opts.mode) {
-				const hsl = colord(value).toHsl();
-				convertedValue = 'hsl(' + hsl.h + ', 100%, 50%)'; // Hard coded saturation and lightness.
-			} else {
-				convertedValue = colord(value).toHslString();
-			}
-
+			convertedValue = colord(value).toHslString();
 			break;
 
 		case 'HslaColorPicker':

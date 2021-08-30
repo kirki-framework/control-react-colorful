@@ -11,14 +11,13 @@ const KirkiReactColorfulInput = (props) => {
 
 	const handleChange = useCallback(
 		(e) => {
-			const valueForInput = e.target.value;
+			let valueForInput = e.target.value;
 			let valueForPicker;
 
 			if ('hue' === props.mode) {
-				valueForPicker = valueForPicker < 0 ? 0 : valueForPicker;
-				valueForPicker = valueForPicker > 360 ? 360 : valueForPicker;
-				valueForPicker = 'hsl(' + valueForInput + ', 100%, 50%)'; // Hard coded saturation and lightness.
-				valueForPicker = colord(value).toHsl();
+				valueForInput = valueForInput < 0 ? 0 : valueForInput;
+				valueForInput = valueForInput > 360 ? 360 : valueForInput;
+				valueForPicker = { h: valueForInput, s: 100, l: 50 }; // Hard coded saturation and lightness.
 			} else {
 				valueForPicker = util.convertColor.forPicker(valueForInput, props.pickerComponent);
 			}
@@ -84,7 +83,7 @@ const KirkiReactColorfulInput = (props) => {
 	};
 
 	const switchFormat = () => {
-		// Hue mode doesn't  have switcher.
+		// Hue mode doesn't have format switcher.
 		if ('hue' === props.mode) return;
 
 		// Get the current value format using colord.
@@ -107,9 +106,7 @@ const KirkiReactColorfulInput = (props) => {
 		const nextFormat = formats[nextFormatIndex];
 		const expectedPicker = nextFormat.charAt(0).toUpperCase() + nextFormat.slice(1) + 'ColorPicker';
 
-		const opts = { formComponent: expectedPicker, mode: props.mode };
-
-		setValue(util.convertColor.forInput(value, expectedPicker, opts));
+		setValue(util.convertColor.forInput(value, expectedPicker, { formComponent: expectedPicker }));
 	}
 
 	const styles = reactCSS({
