@@ -20,7 +20,7 @@ const util = {
  *
  * @returns {string|Object} The converted value.
  */
-util.convertColor.forPicker = (value, pickerComponent) => {
+util.convertColor.forPicker = (value, pickerComponent , opts = {}) => {
 	let convertedValue;
 
 	switch (pickerComponent) {
@@ -56,7 +56,14 @@ util.convertColor.forPicker = (value, pickerComponent) => {
 			break;
 
 		case 'HslStringColorPicker':
-			convertedValue = colord(value).toHslString();
+			// When using hue-only mode.
+			if ('hue' === opts.mode) {
+				const hsl = colord(value).toHsl();
+				convertedValue = 'hsl(' + hsl.h + ', 100%, 50%)'; // Hard coded saturation and lightness.
+			} else {
+				convertedValue = colord(value).toHslString();
+			}
+
 			break;
 
 		case 'HslaColorPicker':
@@ -111,7 +118,7 @@ util.convertColor.forPicker = (value, pickerComponent) => {
  *
  * @returns {string} The converted value.
  */
-util.convertColor.forInput = (value, pickerComponent, choices = {}) => {
+util.convertColor.forInput = (value, pickerComponent, opts = {}) => {
 	let hsv;
 	let hsva;
 	let convertedValue;
@@ -146,7 +153,7 @@ util.convertColor.forInput = (value, pickerComponent, choices = {}) => {
 				convertedValue = colord(value).toRgbString();
 			} else {
 				// When it uses the 2nd condition above, then the expected value is "hex".
-				if (!choices.formComponent) {
+				if (!opts.formComponent) {
 					convertedValue = colord(value).toHex();
 				} else {
 					convertedValue = colord(value).toRgbString();

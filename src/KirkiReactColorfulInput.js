@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import reactCSS from 'reactcss';
-import { getFormat } from "colord";
+import { colord, getFormat } from "colord";
 import util from './util'
 import useClickOutside from "./useClickOutside";
 
@@ -12,7 +12,16 @@ const KirkiReactColorfulInput = (props) => {
 	const handleChange = useCallback(
 		(e) => {
 			const valueForInput = e.target.value;
-			const valueForPicker = util.convertColor.forPicker(valueForInput, props.pickerComponent);
+			let valueForPicker;
+
+			if ('hue' === props.mode) {
+				valueForPicker = valueForPicker < 0 ? 0 : valueForPicker;
+				valueForPicker = valueForPicker > 360 ? 360 : valueForPicker;
+				valueForPicker = 'hsl(' + valueForInput + ', 100%, 50%)'; // Hard coded saturation and lightness.
+				valueForPicker = colord(value).toHsl();
+			} else {
+				valueForPicker = util.convertColor.forPicker(valueForInput, props.pickerComponent);
+			}
 
 			setValue(valueForInput);
 
@@ -75,6 +84,9 @@ const KirkiReactColorfulInput = (props) => {
 	};
 
 	const switchFormat = () => {
+		// Hue mode doesn't  have switcher.
+		if ('hue' === props.mode) return;
+
 		// Get the current value format using colord.
 		let prevFormat = getFormat(value);
 
@@ -95,7 +107,9 @@ const KirkiReactColorfulInput = (props) => {
 		const nextFormat = formats[nextFormatIndex];
 		const expectedPicker = nextFormat.charAt(0).toUpperCase() + nextFormat.slice(1) + 'ColorPicker';
 
-		setValue(util.convertColor.forInput(value, expectedPicker, {formComponent: expectedPicker}));
+		const opts = { formComponent: expectedPicker, mode: props.mode };
+
+		setValue(util.convertColor.forInput(value, expectedPicker, opts));
 	}
 
 	const styles = reactCSS({
@@ -103,13 +117,16 @@ const KirkiReactColorfulInput = (props) => {
 			prefixContent: {
 				backgroundColor: value,
 			},
+			hueContent: {
+				backgroundColor: 'transparent'
+			}
 		},
 	});
 
 	return (
 		<div className="kirki-react-colorful-input-field" ref={inputRef}>
 			<div className="kirki-react-colorful-input-control">
-				<span className="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></span>
+				<span className="kirki-react-colorful-input-color-preview" style={'hue' === props.mode ? styles.hueContent : styles.prefixContent} onClick={props.togglePickerHandler}></span>
 				<input
 					value={value}
 					spellCheck="false" // the element should not be checked for spelling errors.

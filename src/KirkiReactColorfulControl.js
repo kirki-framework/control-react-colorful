@@ -62,7 +62,8 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 		const control = this;
 
 		// We need to define the pickerComponent no matter formComponent is set or not.
-		const pickerComponent = control.params.choices.formComponent ? control.params.choices.formComponent : (control.params.choices.alpha ? 'RgbaColorPicker' : 'HexColorPicker');
+		let pickerComponent = control.params.choices.formComponent ? control.params.choices.formComponent : (control.params.choices.alpha ? 'RgbaColorPicker' : 'HexColorPicker');
+		pickerComponent = 'hue' === control.params.mode ? 'HueColorPicker' : pickerComponent;
 
 		const form = <KirkiReactColorfulForm
 			{ ...control.params }
@@ -70,7 +71,7 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 			customizerSetting={ control.setting }
 			pickerComponent={ pickerComponent }
 			value={ control.setting.get() }
-			setNotificationContainer={ control.setNotificationContainer }
+			setNotificationContainer={ control.setNotificationCotainer }
 		/>;
 
 		ReactDOM.render(
