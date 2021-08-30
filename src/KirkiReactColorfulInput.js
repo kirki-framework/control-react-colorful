@@ -113,9 +113,6 @@ const KirkiReactColorfulInput = (props) => {
 		'default': {
 			prefixContent: {
 				backgroundColor: value,
-			},
-			hueContent: {
-				backgroundColor: 'transparent'
 			}
 		},
 	});
@@ -123,16 +120,20 @@ const KirkiReactColorfulInput = (props) => {
 	return (
 		<div className="kirki-react-colorful-input-field" ref={inputRef}>
 			<div className="kirki-react-colorful-input-control">
-				<span className="kirki-react-colorful-input-color-preview" style={'hue' === props.mode ? styles.hueContent : styles.prefixContent} onClick={props.togglePickerHandler}></span>
+				{'hue' !== props.mode &&
+					<span className="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></span>
+				}
 				<input
 					value={value}
 					spellCheck="false" // the element should not be checked for spelling errors.
 					onClick={props.openPickerHandler}
 					onChange={handleChange}
 				/>
-				<span className="kirki-react-colorful-input-format-switcher" onClick={switchFormat}>
-					<span className="kirki-icon-code"></span>
-				</span>
+				{'hue' !== props.mode &&
+					<span className="kirki-react-colorful-input-format-switcher" onClick={switchFormat}>
+						<span className="kirki-icon-code"></span>
+					</span>
+				}
 			</div>
 		</div>
 	);
