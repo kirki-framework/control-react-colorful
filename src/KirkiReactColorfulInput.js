@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import reactCSS from 'reactcss';
-import { colord, getFormat } from "colord";
+import { getFormat } from "colord";
 import util from './util'
 import useClickOutside from "./useClickOutside";
 

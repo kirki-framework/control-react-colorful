@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { colord } from "colord";
 import { HexColorPicker, RgbColorPicker, RgbaColorPicker, RgbStringColorPicker, RgbaStringColorPicker, HslColorPicker, HslaColorPicker, HslStringColorPicker, HslaStringColorPicker, HsvColorPicker, HsvaColorPicker, HsvStringColorPicker, HsvaStringColorPicker } from "react-colorful";
 import KirkiReactColorfulInput from "./KirkiReactColorfulInput";
+import KirkiReactColorfulSwatches from "./KirkiReactColorfulSwatches";
 import util from './util';
 
 /**
@@ -15,23 +16,25 @@ import util from './util';
  */
 const KirkiReactColorfulForm = (props) => {
 
+	const {customizerSetting, pickerComponent, choices, mode} = props;
+
 	// Use local state for the value of the picker.
 	const [pickerValue, setPickerValue] = useState(() => {
-		if ('hue' === props.mode) {
+		if ('hue' === mode) {
 			// Hard coded saturation and lightness.
 			const valueForPicker = colord('hsl(' + props.value + ', 100%, 50%)').toHsl();
 			return colord(valueForPicker).toHsl();
 		} else {
-			return util.convertColor.forPicker(props.value, props.pickerComponent);
+			return util.convertColor.forPicker(props.value, pickerComponent);
 		}
 	});
 
 	// Use local state for the value of the input.
 	const [inputValue, setInputValue] = useState(() => {
-		if ('hue' === props.mode) {
+		if ('hue' === mode) {
 			return props.value;
 		} else {
-			return util.convertColor.forInput(props.value, props.pickerComponent, {formComponent: props.choices.formComponent});
+			return util.convertColor.forInput(props.value, pickerComponent, {formComponent: choices.formComponent});
 		}
 	});
 
@@ -39,18 +42,18 @@ const KirkiReactColorfulForm = (props) => {
 	 * Function to run on picker change.
 	 */
 	const handlePickerChange = props.onChange ? props.onChange : (color) => {
-		if ('hue' === props.mode) {
+		if ('hue' === mode) {
 			// Notify the input component to set a new value.
 			setInputValue(color.h);
 
 			// ! The react-colorful doesn't support the hue-only picker yet - Let's treat it as hsl picker but use only the hue value.
-			wp.customize.control(props.customizerSetting.id).setting.set(color.h);
+			wp.customize.control(customizerSetting.id).setting.set(color.h);
 			return;
 		}
 
-		const valueForInput = util.convertColor.forInput(color, props.pickerComponent, { formComponent: props.choices.formComponent });
+		const valueForInput = util.convertColor.forInput(color, pickerComponent, { formComponent: choices.formComponent });
 
-		wp.customize.control(props.customizerSetting.id).setting.set(valueForInput);
+		wp.customize.control(customizerSetting.id).setting.set(valueForInput);
 
 		// Notify the input component to set a new value.
 		setInputValue(valueForInput);
@@ -65,7 +68,21 @@ const KirkiReactColorfulForm = (props) => {
 	const handleInputChange = (valueForInput, valueForPicker) => {
 		// Notify the picker component to set a new value.
 		setPickerValue(valueForPicker);
-		wp.customize.control(props.customizerSetting.id).setting.set(valueForInput);
+		wp.customize.control(customizerSetting.id).setting.set(valueForInput);
+	};
+
+	/**
+	 * Function to run on swatches click.
+	 *
+	 * @param {string} swatchColor The value from the clicked color swatch.
+	 */
+	const handleSwatchesClick = (swatchColor) => {
+		const valueForInput = util.convertColor.forInput(swatchColor, pickerComponent, { formComponent: choices.formComponent });
+		const valueForPicker = util.convertColor.forPicker(swatchColor, pickerComponent);
+
+		setPickerValue(valueForPicker);
+		setInputValue(valueForInput);
+		wp.customize.control(customizerSetting.id).setting.set(valueForInput);
 	};
 
 	let controlLabel = <label className="customize-control-title">{props.label}</label>;
@@ -92,8 +109,8 @@ const KirkiReactColorfulForm = (props) => {
 
 	let KirkiPickerComponent;
 
-	// We can't just render `props.pickerComponent` directly, we need these lines so that the compiler will import them.
-	switch (props.pickerComponent) {
+	// We can't just render `pickerComponent` directly, we need these lines so that the compiler will import them.
+	switch (pickerComponent) {
 		case 'HexColorPicker':
 			KirkiPickerComponent = HexColorPicker;
 			break;
@@ -140,7 +157,7 @@ const KirkiReactColorfulForm = (props) => {
 			break;
 	}
 
-	const contentClassName = 'hue' === props.mode ? 'kirki-control-content kirki-control-content-hue-mode' : 'kirki-control-content';
+	const contentClassName = 'hue' === mode ? 'kirki-control-content kirki-control-content-hue-mode' : 'kirki-control-content';
 
 	// Reference to the colorPickerContainer div.
 	const pickerRef = useRef(null);
@@ -150,10 +167,10 @@ const KirkiReactColorfulForm = (props) => {
 			{controlLabel}{controlDescription}{controlNotifications}
 			<KirkiReactColorfulInput
 				pickerRef={pickerRef}
-				formComponent={props.choices.formComponent}
-				pickerComponent={props.pickerComponent}
-				mode={props.mode}
-				alpha={props.choices.alpha}
+				formComponent={choices.formComponent}
+				pickerComponent={pickerComponent}
+				mode={mode}
+				alpha={choices.alpha}
 				color={inputValue}
 				togglePickerHandler={togglePicker}
 				openPickerHandler={openPicker}
@@ -161,6 +178,12 @@ const KirkiReactColorfulForm = (props) => {
 				onChange={handleInputChange}
 			/>
 			<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
+				{'hue' !== mode &&
+					<KirkiReactColorfulSwatches
+						colors={choices.swatches}
+						onClick={handleSwatchesClick}
+					/>
+				}
 				<KirkiPickerComponent
 					color={pickerValue}
 					onChange={handlePickerChange}
