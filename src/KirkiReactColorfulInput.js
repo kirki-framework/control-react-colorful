@@ -95,7 +95,7 @@ const KirkiReactColorfulInput = (props) => {
 		const nextFormat = formats[nextFormatIndex];
 		const expectedPicker = nextFormat.charAt(0).toUpperCase() + nextFormat.slice(1) + 'ColorPicker';
 
-		setValue(util.convertColor.forInput(value, expectedPicker, {}));
+		setValue(util.convertColor.forInput(value, expectedPicker, {formComponent: expectedPicker}));
 	}
 
 	const styles = reactCSS({
