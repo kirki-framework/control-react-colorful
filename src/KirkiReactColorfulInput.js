@@ -121,7 +121,7 @@ const KirkiReactColorfulInput = (props) => {
 		<div className="kirki-react-colorful-input-field" ref={inputRef}>
 			<div className="kirki-react-colorful-input-control">
 				{'hue' !== props.mode &&
-					<span className="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></span>
+					<button type="button" className="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></button>
 				}
 				<input
 					value={value}
@@ -130,9 +130,9 @@ const KirkiReactColorfulInput = (props) => {
 					onChange={handleChange}
 				/>
 				{'hue' !== props.mode &&
-					<span className="kirki-react-colorful-input-format-switcher" onClick={switchFormat}>
+					<button type="button" className="kirki-react-colorful-input-format-switcher" onClick={switchFormat}>
 						<span className="kirki-icon-code"></span>
-					</span>
+					</button>
 				}
 			</div>
 		</div>
