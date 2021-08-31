@@ -165,7 +165,7 @@ const KirkiReactColorfulForm = (props) => {
 	// Reference to the colorPickerContainer div.
 	const pickerRef = useRef(null);
 
-	if (jQuery.wp.wpColorPicker) {
+	if (jQuery.wp && jQuery.wp.wpColorPicker) {
 		const wpColorPickerSwatches = jQuery.wp.wpColorPicker.prototype.options.palettes;
 
 		// If 3rd parties applied custom colors to wpColorPicker swatches, let's use them.
