@@ -159,13 +159,17 @@ const KirkiReactColorfulForm = (props) => {
 
 	const contentClassName = 'hue' === mode ? 'kirki-control-content kirki-control-content-hue-mode' : 'kirki-control-content';
 
+	// Referene to the wrapper/control content div.
+	const contentRef = useRef(null);
+
 	// Reference to the colorPickerContainer div.
 	const pickerRef = useRef(null);
 
 	return (
-		<div className={contentClassName}>
+		<div className={contentClassName} ref={contentRef}>
 			{controlLabel}{controlDescription}{controlNotifications}
 			<KirkiReactColorfulInput
+				contentRef={contentRef}
 				pickerRef={pickerRef}
 				formComponent={choices.formComponent}
 				pickerComponent={pickerComponent}

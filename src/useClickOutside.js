@@ -6,12 +6,12 @@ import { useEffect } from "react";
  */
 const useClickOutside = (inputRef, pickerRef, closeHandler) => {
 	useEffect(() => {
-		let startedInside = false;
 		let startedWhenMounted = false;
+		let startedInside = false;
 
 		const listener = (event) => {
 			// Do nothing if `mousedown` or `touchstart` started either inside inputRef or pickerRef element
-			if (startedInside || !startedWhenMounted) return;
+			if (!startedWhenMounted || startedInside) return;
 
 			// Do nothing if clicking inputRef's element or descendent elements
 			if (!inputRef.current || inputRef.current.contains(event.target)) return;

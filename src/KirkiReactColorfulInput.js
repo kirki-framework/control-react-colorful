@@ -3,6 +3,7 @@ import reactCSS from 'reactcss';
 import { getFormat } from "colord";
 import util from './util'
 import useClickOutside from "./useClickOutside";
+import useFocusOutside from "./useFocusOutside";
 
 const KirkiReactColorfulInput = (props) => {
 	const { onChange, color = "" } = props;
@@ -41,6 +42,9 @@ const KirkiReactColorfulInput = (props) => {
 
 	// Handle outside click to close the picker popup.
 	useClickOutside(inputRef, props.pickerRef, props.closePickerHandler);
+
+	// Handle outside focus to close the picker popup.
+	useFocusOutside(props.contentRef, props.closePickerHandler);
 
 	// This is for the color switcher stuff.
 	let useAlpha = false;
@@ -118,15 +122,16 @@ const KirkiReactColorfulInput = (props) => {
 	});
 
 	return (
-		<div className="kirki-react-colorful-input-field" ref={inputRef}>
+		<div className="kirki-react-colorful-input-wrapper" ref={inputRef}>
 			<div className="kirki-react-colorful-input-control">
 				{'hue' !== props.mode &&
 					<button type="button" className="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></button>
 				}
 				<input
 					value={value}
-					spellCheck="false" // the element should not be checked for spelling errors.
-					onClick={props.openPickerHandler}
+					className="kirki-react-colorful-input"
+					spellCheck="false" // The element should not be checked for spelling errors.
+					onFocus={props.openPickerHandler}
 					onChange={handleChange}
 				/>
 				{'hue' !== props.mode &&
