@@ -165,6 +165,21 @@ const KirkiReactColorfulForm = (props) => {
 	// Reference to the colorPickerContainer div.
 	const pickerRef = useRef(null);
 
+	if (jQuery.wp.wpColorPicker) {
+		const wpColorPickerSwatches = jQuery.wp.wpColorPicker.prototype.options.palettes;
+
+		// If 3rd parties applied custom colors to wpColorPicker swatches, let's use them.
+		if (Array.isArray(wpColorPickerSwatches)) {
+			if (wpColorPickerSwatches.length < 8) {
+				for (let i = wpColorPickerSwatches.length; i <= 8; i++) {
+					wpColorPickerSwatches.push(choices.swatches[i]);
+				}
+			}
+
+			choices.swatches = wpColorPickerSwatches;
+		}
+	}
+
 	return (
 		<div className={contentClassName} ref={contentRef}>
 			{controlLabel}{controlDescription}{controlNotifications}
