@@ -20,7 +20,7 @@ const util = {
  *
  * @returns {string|Object} The converted value.
  */
-util.convertColor.forPicker = (value, pickerComponent , opts = {}) => {
+util.convertColor.forPicker = (value, pickerComponent) => {
 	let convertedValue;
 
 	switch (pickerComponent) {

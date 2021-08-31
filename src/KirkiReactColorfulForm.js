@@ -191,6 +191,8 @@ const KirkiReactColorfulForm = (props) => {
 				mode={mode}
 				alpha={choices.alpha}
 				color={inputValue}
+				defaultColor={props.default}
+				isPickerOpen={isPickerOpen}
 				togglePickerHandler={togglePicker}
 				openPickerHandler={openPicker}
 				closePickerHandler={closePicker}

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import reactCSS from 'reactcss';
-import { getFormat } from "colord";
 import util from './util'
 import useClickOutside from "./useClickOutside";
 import useFocusOutside from "./useFocusOutside";
@@ -16,20 +15,42 @@ const KirkiReactColorfulInput = (props) => {
 			let valueForPicker;
 
 			if ('hue' === props.mode) {
-				valueForInput = valueForInput < 0 ? 0 : valueForInput;
-				valueForInput = valueForInput > 360 ? 360 : valueForInput;
+				valueForInput = parseHueModeValue(valueForInput);
 				valueForPicker = { h: valueForInput, s: 100, l: 50 }; // Hard coded saturation and lightness.
 			} else {
 				valueForPicker = util.convertColor.forPicker(valueForInput, props.pickerComponent);
 			}
 
 			setValue(valueForInput);
-
-			// Run onChange handler passed by KirkiReactColorfulForm component.
-			onChange(valueForInput, valueForPicker);
+			onChange(valueForInput, valueForPicker); // Run onChange handler passed by KirkiReactColorfulForm component.
 		},
 		[onChange]
 	);
+
+	const resetColor = () => {
+		let valueForInput;
+		let valueForPicker;
+
+		if ('hue' === props.mode) {
+			valueForInput = parseHueModeValue(props.defaultColor);
+			valueForPicker = { h: valueForInput, s: 100, l: 50 }; // Hard coded saturation and lightness.
+		} else {
+			valueForInput = util.convertColor.forInput(props.defaultColor, props.pickerComponent, { formComponent: props.formComponent });
+			valueForPicker = util.convertColor.forPicker(props.defaultColor, props.pickerComponent);
+		}
+
+		console.log(valueForInput);
+		console.log(valueForPicker);
+		console.log('---');
+
+		setValue(valueForInput);
+		onChange(valueForInput, valueForPicker); // Run onChange handler passed by KirkiReactColorfulForm component.
+	};
+
+	const parseHueModeValue = (hueValue) => {
+		hueValue = hueValue < 0 ? 0 : hueValue;
+		return (hueValue > 360 ? 360 : hueValue);
+	}
 
 	// Update the local state when `color` property value is changed.
 	useEffect(() => {
@@ -46,46 +67,6 @@ const KirkiReactColorfulInput = (props) => {
 	// Handle outside focus to close the picker popup.
 	useFocusOutside(props.contentRef, props.closePickerHandler);
 
-	// This is for the color switcher stuff.
-	let useAlpha = false;
-
-	/**
-	 * If formComponent is set when setting up Kirki fields, it checks for it.
-	 * We ignore the "alpha" choice when formComponent is defined.
-	 */
-	if (props.formComponent) {
-		if ('RgbaColorPicker' === props.formComponent || 'HslaColorPicker' === props.formComponent || 'HsvaColorControl' === props.formComponent) {
-			useAlpha = true;
-		} else {
-			useAlpha = false;
-		}
-	} else {
-		useAlpha = props.alpha ? true : false;
-	}
-
-	// Currently, we only support these colors for the picker.
-	const availableFormats = ['hex', 'rgb', 'rgba', 'hsl', 'hsla'];
-
-	// But for the format switcher, we only support these colors when useAlpha is true.
-	const alphaFormats = ['hex', 'rgba', 'hsla'];
-	const alphaConversion = {
-		hex: 'hex',
-		rgb: 'rgba',
-		rgba: 'rgba',
-		hsl: 'hsla',
-		hsla: 'hsla',
-	};
-
-	// And when useAlpha is false, we only support these colors for the format switcher.
-	const nonAlphaFormats = ['hex', 'rgb', 'hsl'];
-	const nonAlphaConversion = {
-		hex: 'hex',
-		rgb: 'rgb',
-		rgba: 'hex',
-		hsl: 'hsl',
-		hsla: 'hex',
-	};
-
 	const styles = reactCSS({
 		'default': {
 			prefixContent: {
@@ -98,15 +79,19 @@ const KirkiReactColorfulInput = (props) => {
 		<div className="kirki-react-colorful-input-wrapper" ref={inputRef}>
 			<div className="kirki-react-colorful-input-control">
 				{'hue' !== props.mode &&
-					<button type="button" className="kirki-react-colorful-input-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></button>
+					<button type="button" className="kirki-react-colorful-color-preview" style={styles.prefixContent} onClick={props.togglePickerHandler}></button>
 				}
 				<input
+					type="text"
 					value={value}
 					className="kirki-react-colorful-input"
 					spellCheck="false" // The element should not be checked for spelling errors.
 					onFocus={props.openPickerHandler}
 					onChange={handleChange}
 				/>
+				<button type="button" className="kirki-react-colorful-reset-button" onClick={resetColor} style={{display: props.isPickerOpen ? 'flex' : 'none'}}>
+					<i className="dashicons dashicons-image-rotate"></i>
+				</button>
 			</div>
 		</div>
 	);
