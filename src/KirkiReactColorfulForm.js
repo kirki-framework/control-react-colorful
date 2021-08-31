@@ -181,7 +181,7 @@ const KirkiReactColorfulForm = (props) => {
 	}
 
 	return (
-		<div className={contentClassName} ref={contentRef}>
+		<div className={contentClassName} ref={contentRef} tabIndex="1">
 			{controlLabel}{controlDescription}{controlNotifications}
 			<KirkiReactColorfulInput
 				contentRef={contentRef}
