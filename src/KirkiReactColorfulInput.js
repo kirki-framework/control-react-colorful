@@ -39,10 +39,6 @@ const KirkiReactColorfulInput = (props) => {
 			valueForPicker = util.convertColor.forPicker(props.defaultColor, props.pickerComponent);
 		}
 
-		console.log(valueForInput);
-		console.log(valueForPicker);
-		console.log('---');
-
 		setValue(valueForInput);
 		onChange(valueForInput, valueForPicker); // Run onChange handler passed by KirkiReactColorfulForm component.
 	};

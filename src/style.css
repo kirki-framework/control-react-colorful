@@ -139,11 +139,9 @@ input.kirki-react-colorful-input {
   border-radius: 50%;
   border-width: 0;
   z-index: 3;
-  transform: rotate(-45deg);
-  transition: transform .2s;
 }
 
-.kirki-react-colorful-reset-button:hover {
+.kirki-react-colorful-reset-button:hover i {
   color: #f00;
   transform: rotate(45deg);
 }
@@ -152,6 +150,8 @@ input.kirki-react-colorful-input {
   font-size: 12px;
   width: auto;
   height: auto;
+  transform: rotate(-45deg);
+  transition: transform .2s;
 }
 
 .kirki-react-colorful-swatches {
