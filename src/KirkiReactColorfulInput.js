@@ -86,33 +86,6 @@ const KirkiReactColorfulInput = (props) => {
 		hsla: 'hex',
 	};
 
-	const switchFormat = () => {
-		// Hue mode doesn't have format switcher.
-		if ('hue' === props.mode) return;
-
-		// Get the current value format using colord.
-		let prevFormat = getFormat(value);
-
-		// If the format is not listed under `availableFormats`, then stop here.
-		if (!availableFormats.includes(prevFormat)) return;
-
-		const conversion = useAlpha ? alphaConversion : nonAlphaConversion;
-		const formats = useAlpha ? alphaFormats : nonAlphaFormats;
-
-		// The format before we switch.
-		prevFormat = conversion[prevFormat];
-
-		const prevFormatIndex = formats.indexOf(prevFormat);
-
-		let nextFormatIndex = prevFormatIndex + 1;
-		nextFormatIndex = nextFormatIndex >= formats.length ? 0 : nextFormatIndex;
-
-		const nextFormat = formats[nextFormatIndex];
-		const expectedPicker = nextFormat.charAt(0).toUpperCase() + nextFormat.slice(1) + 'ColorPicker';
-
-		setValue(util.convertColor.forInput(value, expectedPicker, { formComponent: expectedPicker }));
-	}
-
 	const styles = reactCSS({
 		'default': {
 			prefixContent: {
@@ -134,11 +107,6 @@ const KirkiReactColorfulInput = (props) => {
 					onFocus={props.openPickerHandler}
 					onChange={handleChange}
 				/>
-				{'hue' !== props.mode &&
-					<button type="button" className="kirki-react-colorful-input-format-switcher" onClick={switchFormat}>
-						<span className="kirki-icon-code"></span>
-					</button>
-				}
 			</div>
 		</div>
 	);
