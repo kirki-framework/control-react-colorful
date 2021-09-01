@@ -16,23 +16,23 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 	 * @param {string} id - Control ID.
 	 * @param {object} params - Control params.
 	 */
-	initialize: function( id, params ) {
+	initialize: function (id, params) {
 		const control = this;
 
 		// Bind functions to this control context for passing as React props.
-		control.setNotificationContainer = control.setNotificationContainer.bind( control );
+		control.setNotificationContainer = control.setNotificationContainer.bind(control);
 
-		wp.customize.Control.prototype.initialize.call( control, id, params );
+		wp.customize.Control.prototype.initialize.call(control, id, params);
 
 		// The following should be eliminated with <https://core.trac.wordpress.org/ticket/31334>.
-		function onRemoved( removedControl ) {
-			if ( control === removedControl ) {
+		function onRemoved(removedControl) {
+			if (control === removedControl) {
 				control.destroy();
 				control.container.remove();
-				wp.customize.control.unbind( 'removed', onRemoved );
+				wp.customize.control.unbind('removed', onRemoved);
 			}
 		}
-		wp.customize.control.bind( 'removed', onRemoved );
+		wp.customize.control.bind('removed', onRemoved);
 	},
 
 	/**
@@ -43,9 +43,9 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 	 * @param {Element} element - Notification container.
 	 * @returns {void}
 	 */
-	setNotificationContainer: function setNotificationContainer( element ) {
+	setNotificationContainer: function setNotificationContainer(element) {
 		const control = this;
-		control.notifications.container = jQuery( element );
+		control.notifications.container = jQuery(element);
 		control.notifications.render();
 	},
 
@@ -54,24 +54,24 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 	 *
 	 * This is called from the Control#embed() method in the parent class.
 	 *
-	 * ? Bagus: Noob question. This function is called even in every color drag. Is it how react component works here? :D
-	 *
 	 * @returns {void}
 	 */
 	renderContent: function renderContent() {
 		const control = this;
+		const useHueMode = 'hue' === control.params.mode;
 
 		// We need to define the pickerComponent no matter formComponent is set or not.
 		let pickerComponent = control.params.choices.formComponent ? control.params.choices.formComponent : (control.params.choices.alpha ? 'RgbaColorPicker' : 'HexColorPicker');
-		pickerComponent = 'hue' === control.params.mode ? 'HueColorPicker' : pickerComponent;
+		pickerComponent = useHueMode ? 'HueColorPicker' : pickerComponent;
 
 		const form = <KirkiReactColorfulForm
-			{ ...control.params }
-			control={ control }
-			customizerSetting={ control.setting }
-			pickerComponent={ pickerComponent }
-			value={ control.setting.get() }
-			setNotificationContainer={ control.setNotificationCotainer }
+			{...control.params}
+			control={control}
+			customizerSetting={control.setting}
+			useHueMode={useHueMode}
+			pickerComponent={pickerComponent}
+			value={control.setting.get()}
+			setNotificationContainer={control.setNotificationCotainer}
 		/>;
 
 		ReactDOM.render(
@@ -79,8 +79,8 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 			control.container[0]
 		);
 
-		if ( false !== control.params.choices.allowCollapse ) {
-			control.container.addClass( 'allowCollapse colorPickerIsCollapsed' );
+		if (false !== control.params.choices.allowCollapse) {
+			control.container.addClass('allowCollapse colorPickerIsCollapsed');
 		}
 	},
 
@@ -94,10 +94,31 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 	ready: function ready() {
 		const control = this;
 
-		// Re-render control when setting changes.
-		control.setting.bind( () => {
-			control.renderContent();
-		} );
+		/**
+		 * Re-render control when customizer setting changes.
+		 *
+		 * There was an issue (which was fixed):
+		 *
+		 * Let's say we have other color picker ("x" color picker) and this current color picker ("y" color picker).
+		 * Let's say there's a script that bind to that "x" color picker to make change to this "y" color picker.
+		 *
+		 * When "x" color picker is changed fast (by dragging the color, for example),
+		 * then the re-render of this "y" color picker will be messy.
+		 * There was something like "function-call race" between component re-render and function call inside the component.
+		 *
+		 * When that happens, the "x" color picker becomes unresponsive and un-usable.
+		 *
+		 * How we fixed that:
+		 * - Provide a global object for Kirki that can be extended by components.
+		 * - Inside the component, extend the global object which content is about updating a state.
+		 * - Then inside the binding below, call that function instead of re-render the component.
+		 *
+		 * So instead of re-rendering the component, we call the component callback to update it's state.
+		 * The result: Even though the "x" color picker becomes very slow, it's still usable and responsive enough.
+		 */
+		control.setting.bind((val) => {
+			window.Kirki.componentCallback[control.setting.id](val);
+		});
 	},
 
 	/**
@@ -112,11 +133,11 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 		const control = this;
 
 		// Garbage collection: undo mounting that was done in the embed/renderContent method.
-		ReactDOM.unmountComponentAtNode( control.container[0] );
+		ReactDOM.unmountComponentAtNode(control.container[0]);
 
 		// Call destroy method in parent if it exists (as of #31334).
-		if ( wp.customize.Control.prototype.destroy ) {
-			wp.customize.Control.prototype.destroy.call( control );
+		if (wp.customize.Control.prototype.destroy) {
+			wp.customize.Control.prototype.destroy.call(control);
 		}
 	}
 });
