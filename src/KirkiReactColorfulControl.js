@@ -109,17 +109,18 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 		 * When that happens, the "x" color picker becomes unresponsive and un-usable.
 		 *
 		 * How we fixed that:
-		 * - Provide a global object for Kirki that can be extended by components.
-		 * - Inside the component, extend the global object which content is about updating a state.
-		 * - Then inside the binding below, call that function instead of re-render the component.
+		 * - Provide a componentCallback property to this file.
+		 * - Inside the component, assign the componentCallback with a function to update some states.
+		 * - Then inside the binding below, call componentCallback instead of re-rendering the component.
 		 *
-		 * So instead of re-rendering the component, we call the component callback to update it's state.
 		 * The result: Even though the "x" color picker becomes very slow, it's still usable and responsive enough.
 		 */
 		control.setting.bind((val) => {
-			window.Kirki.componentCallback[control.setting.id](val);
+			control.componentCallback(val);
 		});
 	},
+
+	componentCallback: () => {},
 
 	/**
 	 * Handle removal/de-registration of the control.

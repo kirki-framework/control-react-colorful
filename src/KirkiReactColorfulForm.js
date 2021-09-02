@@ -31,7 +31,7 @@ const KirkiReactColorfulForm = (props) => {
 	});
 
 	// This function will be called when this control's customizer value is changed.
-	Kirki.componentCallback[customizerSetting.id] = (value) => {
+	props.control.componentCallback = (value) => {
 		setInputValue(value);
 		setPickerValue(parsePickerValue(value));
 	};
