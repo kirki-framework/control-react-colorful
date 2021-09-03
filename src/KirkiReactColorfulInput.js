@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import reactCSS from 'reactcss';
-import util from './util'
 import useClickOutside from "./useClickOutside";
 import useFocusOutside from "./useFocusOutside";
 
 const KirkiReactColorfulInput = (props) => {
-	const { useHueMode, onChange, color = "" } = props;
+	const { useHueMode, onChange, initialColor = "", color = "" } = props;
 	const [value, setValue] = useState(() => color);
 
 	const handleChange = useCallback(
@@ -19,16 +18,14 @@ const KirkiReactColorfulInput = (props) => {
 	);
 
 	const resetColor = () => {
-		let valueForInput;
+		let valueForInput = '';
 
-		if (useHueMode) {
-			valueForInput = parseHueModeValue(props.defaultColor);
-		} else {
-			valueForInput = util.convertColor.forInput(props.defaultColor, props.pickerComponent, { formComponent: props.formComponent });
+		if ('' !== initialColor) {
+			valueForInput = useHueMode ? parseHueModeValue(initialColor) : initialColor;
 		}
 
 		setValue(valueForInput);
-		onChange(valueForInput); // Run onChange handler passed by `KirkiReactColorfulForm` component.
+		onChange(initialColor); // Run onChange handler passed by `KirkiReactColorfulForm` component.
 	};
 
 	const parseHueModeValue = (hueValue) => {
@@ -53,6 +50,9 @@ const KirkiReactColorfulInput = (props) => {
 
 	const styles = reactCSS({
 		'default': {
+			colorPreviewWrapper: {
+				backgroundImage: (props.alpha ? 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAAHnlligAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHJJREFUeNpi+P///4EDBxiAGMgCCCAGFB5AADGCRBgYDh48CCRZIJS9vT2QBAggFBkmBiSAogxFBiCAoHogAKIKAlBUYTELAiAmEtABEECk20G6BOmuIl0CIMBQ/IEMkO0myiSSraaaBhZcbkUOs0HuBwDplz5uFJ3Z4gAAAABJRU5ErkJggg==")' : 'none'),
+			},
 			colorPreview: {
 				backgroundColor: value,
 			}
@@ -63,7 +63,9 @@ const KirkiReactColorfulInput = (props) => {
 		<div className="kirki-react-colorful-input-wrapper" ref={inputRef}>
 			<div className="kirki-react-colorful-input-control">
 				{!useHueMode &&
-					<button type="button" className="kirki-react-colorful-color-preview" style={styles.colorPreview} onClick={props.togglePickerHandler}></button>
+					<div className="kirki-react-colorful-color-preview-wrapper" style={styles.colorPreviewWrapper}>
+						<button type="button" className="kirki-react-colorful-color-preview" style={styles.colorPreview} onClick={props.togglePickerHandler}></button>
+					</div>
 				}
 				<input
 					type="text"

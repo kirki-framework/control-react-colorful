@@ -32,8 +32,11 @@ const KirkiReactColorfulForm = (props) => {
 
 	// This function will be called when this control's customizer value is changed.
 	props.control.componentCallback = (value) => {
-		setInputValue(value);
-		setPickerValue(parsePickerValue(value));
+		const valueForInput = '' !== value ? value : (useHueMode ? parseHueModeValue(props.value) : props.value); // props.value is treated as initial value here.
+		const valueForPicker = '' !== value ? value : (useHueMode ? 0 : '#000000');
+
+		setInputValue(valueForInput);
+		setPickerValue(parsePickerValue(valueForPicker));
 	};
 
 	const saveToCustomizer = (value) => {
@@ -57,15 +60,6 @@ const KirkiReactColorfulForm = (props) => {
 		const value = util.convertColor.forInput(color, pickerComponent, { formComponent: choices.formComponent });
 		saveToCustomizer(value);
 	}
-
-	/**
-	 * Function to run on input change.
-	 *
-	 * @param {string|int} value The value for the customizer. The format is `int` when using hue mode, otherwise, `string`.
-	 */
-	const handleInputChange = (value) => {
-		saveToCustomizer(value);
-	};
 
 	/**
 	 * Function to run on swatches click.
@@ -181,15 +175,15 @@ const KirkiReactColorfulForm = (props) => {
 				pickerRef={pickerRef}
 				formComponent={choices.formComponent}
 				pickerComponent={pickerComponent}
-				use={useHueMode}
+				useHueMode={useHueMode}
 				alpha={choices.alpha}
 				color={inputValue}
-				defaultColor={props.default}
+				initialColor={props.value}
 				isPickerOpen={isPickerOpen}
 				togglePickerHandler={togglePicker}
 				openPickerHandler={openPicker}
 				closePickerHandler={closePicker}
-				onChange={handleInputChange}
+				onChange={saveToCustomizer}
 			/>
 			<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
 				{!useHueMode &&
