@@ -24,6 +24,11 @@ const KirkiReactColorfulForm = (props) => {
 		return valueForPicker;
 	}
 
+	const parseHueModeValue = (hueValue) => {
+		hueValue = hueValue < 0 ? 0 : hueValue;
+		return (hueValue > 360 ? 360 : hueValue);
+	}
+
 	const [inputValue, setInputValue] = useState(props.value);
 
 	const [pickerValue, setPickerValue] = useState(() => {
@@ -184,6 +189,7 @@ const KirkiReactColorfulForm = (props) => {
 				openPickerHandler={openPicker}
 				closePickerHandler={closePicker}
 				onChange={saveToCustomizer}
+				parseHueModeValue={parseHueModeValue}
 			/>
 			<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
 				{!useHueMode &&

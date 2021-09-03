@@ -4,7 +4,7 @@ import useClickOutside from "./useClickOutside";
 import useFocusOutside from "./useFocusOutside";
 
 const KirkiReactColorfulInput = (props) => {
-	const { useHueMode, onChange, initialColor = "", color = "" } = props;
+	const { useHueMode, onChange, parseHueModeValue, initialColor = "", color = "" } = props;
 	const [value, setValue] = useState(() => color);
 
 	const handleChange = useCallback(
@@ -27,11 +27,6 @@ const KirkiReactColorfulInput = (props) => {
 		setValue(valueForInput);
 		onChange(initialColor); // Run onChange handler passed by `KirkiReactColorfulForm` component.
 	};
-
-	const parseHueModeValue = (hueValue) => {
-		hueValue = hueValue < 0 ? 0 : hueValue;
-		return (hueValue > 360 ? 360 : hueValue);
-	}
 
 	// Update the local state when `color` property value is changed.
 	useEffect(() => {
