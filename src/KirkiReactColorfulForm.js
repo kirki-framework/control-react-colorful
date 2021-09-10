@@ -79,9 +79,15 @@ const KirkiReactColorfulForm = (props) => {
 		saveToCustomizer(value);
 	};
 
-	let controlLabel = <label className="customize-control-title">{props.label}</label>;
+	let controlLabel = <span className="customize-control-title">{props.label}</span>;
 	let controlDescription = <span className="description customize-control-description" dangerouslySetInnerHTML={{ __html: props.description }}></span>;
 	let controlNotifications = <div className="customize-control-notifications-container" ref={props.setNotificationContainer}></div>;
+
+	controlLabel = <label className="kirki-control-label">
+		{props.label ? controlLabel : ''}
+		{props.description ? controlDescription : ''}
+	</label>;
+
 
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
@@ -213,8 +219,7 @@ const KirkiReactColorfulForm = (props) => {
 
 	return (
 		<div className={formClassName} ref={formRef} tabIndex="1">
-			{props.label ? controlLabel : ''}
-			{props.description ? controlDescription : ''}
+			{props.label || props.description ? controlLabel : ''}
 			{controlNotifications}
 			{'button' === choices.triggerStyle ? formButton : formInput}
 			<div ref={pickerRef} className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'}>
