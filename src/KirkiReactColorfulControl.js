@@ -95,7 +95,7 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 		const control = this;
 
 		/**
-		 * Re-render control when customizer setting changes.
+		 * Update component state when customizer setting changes.
 		 *
 		 * There was an issue (which was fixed):
 		 *
@@ -109,18 +109,18 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 		 * When that happens, the "x" color picker becomes unresponsive and un-usable.
 		 *
 		 * How we fixed that:
-		 * - Provide a componentCallback property to this file.
-		 * - Inside the component, assign the componentCallback with a function to update some states.
-		 * - Then inside the binding below, call componentCallback instead of re-rendering the component.
+		 * - Provide a updateComponentState property to this file.
+		 * - Inside the component, assign the updateComponentState with a function to update some states.
+		 * - Then inside the binding below, call updateComponentState instead of re-rendering the component.
 		 *
 		 * The result: Even though the "x" color picker becomes very slow, it's still usable and responsive enough.
 		 */
 		control.setting.bind((val) => {
-			control.componentCallback(val);
+			control.updateComponentState(val);
 		});
 	},
 
-	componentCallback: () => {},
+	updateComponentState: () => {},
 
 	/**
 	 * Handle removal/de-registration of the control.

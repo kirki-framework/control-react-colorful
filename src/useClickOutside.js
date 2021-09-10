@@ -4,7 +4,7 @@ import { useEffect } from "react";
  * Code was taken and then modified from https://codesandbox.io/s/opmco?file=/src/useClickOutside.js:0-1192
  * It was improved version of https://usehooks.com/useOnClickOutside/
  */
-const useClickOutside = (inputRef, pickerRef, closeHandler) => {
+const useClickOutside = (inputRef, pickerRef, handler) => {
 	useEffect(() => {
 		let startedWhenMounted = false;
 		let startedInside = false;
@@ -19,7 +19,7 @@ const useClickOutside = (inputRef, pickerRef, closeHandler) => {
 			// Do nothing if clicking pickerRef's element or descendent elements
 			if (!pickerRef.current || pickerRef.current.contains(event.target)) return;
 
-			closeHandler();
+			handler();
 		};
 
 		const validateEventStart = (event) => {
@@ -36,7 +36,7 @@ const useClickOutside = (inputRef, pickerRef, closeHandler) => {
 			document.removeEventListener("touchstart", validateEventStart);
 			document.removeEventListener("click", listener);
 		};
-	}, [inputRef, pickerRef, closeHandler]);
+	}, [inputRef, pickerRef, handler]);
 };
 
 export default useClickOutside;

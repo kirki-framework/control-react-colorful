@@ -1,7 +1,10 @@
 import { useState, useRef } from "react";
 import { HexColorPicker, RgbColorPicker, RgbaColorPicker, RgbStringColorPicker, RgbaStringColorPicker, HslColorPicker, HslaColorPicker, HslStringColorPicker, HslaStringColorPicker, HsvColorPicker, HsvaColorPicker, HsvStringColorPicker, HsvaStringColorPicker } from "react-colorful";
+import KirkiReactColorfulButton from "./KirkiReactColorfulButton";
 import KirkiReactColorfulInput from "./KirkiReactColorfulInput";
 import KirkiReactColorfulSwatches from "./KirkiReactColorfulSwatches";
+import useClickOutside from "./useClickOutside";
+import useFocusOutside from "./useFocusOutside";
 import util from './util';
 
 /**
@@ -15,7 +18,7 @@ import util from './util';
  */
 const KirkiReactColorfulForm = (props) => {
 
-	const { customizerSetting, useHueMode, pickerComponent, choices } = props;
+	const { control, customizerSetting, useHueMode, pickerComponent, choices } = props;
 
 	const parsePickerValue = (value) => {
 		let valueForPicker = util.convertColor.forPicker(value, pickerComponent);
@@ -36,7 +39,7 @@ const KirkiReactColorfulForm = (props) => {
 	});
 
 	// This function will be called when this control's customizer value is changed.
-	props.control.componentCallback = (value) => {
+	control.updateComponentState = (value) => {
 		const valueForInput = '' !== value ? value : (useHueMode ? parseHueModeValue(props.value) : props.value); // props.value is treated as initial value here.
 		const valueForPicker = '' !== value ? value : (useHueMode ? 0 : '#000000');
 
@@ -45,7 +48,7 @@ const KirkiReactColorfulForm = (props) => {
 	};
 
 	const saveToCustomizer = (value) => {
-		wp.customize.control(customizerSetting.id).setting.set(value);
+		customizerSetting.set(value);
 	}
 
 	/**
@@ -149,13 +152,18 @@ const KirkiReactColorfulForm = (props) => {
 			break;
 	}
 
-	const contentClassName = useHueMode ? 'kirki-control-content kirki-control-content-hue-mode' : 'kirki-control-content';
+	let formClassName = useHueMode ? 'kirki-control-form use-hue-mode' : 'kirki-control-form';
+	formClassName += ' use-' + choices.triggerStyle + '-trigger';
 
-	// Referene to the wrapper/control content div.
-	const contentRef = useRef(null);
+	const formRef = useRef(null); // Reference to the form div.
+	const inputRef = useRef(null); // Reference to the form input.
+	const pickerRef = useRef(null); // Reference to the picker popup.
 
-	// Reference to the colorPickerContainer div.
-	const pickerRef = useRef(null);
+	// Handle outside focus to close the picker popup.
+	useFocusOutside(formRef, closePicker);
+
+	// Handle outside click to close the picker popup.
+	useClickOutside(inputRef, pickerRef, closePicker);
 
 	if (jQuery.wp && jQuery.wp.wpColorPicker) {
 		const wpColorPickerSwatches = jQuery.wp.wpColorPicker.prototype.options.palettes;
@@ -172,26 +180,44 @@ const KirkiReactColorfulForm = (props) => {
 		}
 	}
 
+	const formInput = <KirkiReactColorfulInput
+		pickerComponent={pickerComponent}
+		inputRef={inputRef}
+		useHueMode={useHueMode}
+		color={inputValue}
+		initialColor={props.value}
+		triggerStyle={choices.triggerStyle}
+		isPickerOpen={isPickerOpen}
+		togglePickerHandler={togglePicker}
+		openPickerHandler={openPicker}
+		onChange={saveToCustomizer}
+		parseHueModeValue={parseHueModeValue}
+	/>;
+
+	let formButton = '';
+
+	if ('button' === choices.triggerStyle) {
+		formButton = <KirkiReactColorfulButton
+			pickerComponent={pickerComponent}
+			buttonText={choices.buttonText}
+			useHueMode={useHueMode}
+			color={inputValue}
+			initialColor={props.value}
+			isPickerOpen={isPickerOpen}
+			togglePickerHandler={togglePicker}
+			onChange={saveToCustomizer}
+			parseHueModeValue={parseHueModeValue}
+		/>
+	}
+
+
 	return (
-		<div className={contentClassName} ref={contentRef} tabIndex="1">
-			{controlLabel}{controlDescription}{controlNotifications}
-			<KirkiReactColorfulInput
-				contentRef={contentRef}
-				pickerRef={pickerRef}
-				formComponent={choices.formComponent}
-				pickerComponent={pickerComponent}
-				useHueMode={useHueMode}
-				alpha={choices.alpha}
-				color={inputValue}
-				initialColor={props.value}
-				isPickerOpen={isPickerOpen}
-				togglePickerHandler={togglePicker}
-				openPickerHandler={openPicker}
-				closePickerHandler={closePicker}
-				onChange={saveToCustomizer}
-				parseHueModeValue={parseHueModeValue}
-			/>
-			<div className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'} ref={pickerRef}>
+		<div className={formClassName} ref={formRef} tabIndex="1">
+			{props.label ? controlLabel : ''}
+			{props.description ? controlDescription : ''}
+			{controlNotifications}
+			{'button' === choices.triggerStyle ? formButton : formInput}
+			<div ref={pickerRef} className={isPickerOpen ? 'colorPickerContainer is-open' : 'colorPickerContainer'}>
 				{!useHueMode &&
 					<KirkiReactColorfulSwatches
 						colors={choices.swatches}
@@ -202,6 +228,7 @@ const KirkiReactColorfulForm = (props) => {
 					color={pickerValue}
 					onChange={handlePickerChange}
 				/>
+				{'button' === choices.triggerStyle ? formInput : ''}
 			</div>
 		</div>
 	);

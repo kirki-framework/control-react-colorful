@@ -1,12 +1,12 @@
 const KirkiReactColorfulSwatches = ({colors, onClick}) => {
 
 	return (
-		<div className="kirki-react-colorful-swatches">
+		<div className="kirki-color-swatches">
 			{colors.map((color, index) => (
 				<button
 					key={index.toString()}
 					type="button"
-					className="kirki-react-colorful-swatch"
+					className="kirki-color-swatch"
 					data-kirki-color={color}
 					style={{backgroundColor: color}}
 					onClick={() => onClick(color)}

@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 
-const useFocusOutside = (contentRef, closeHandler) => {
+const useFocusOutside = (ref, handler) => {
 	useEffect(() => {
 		const listener = (e) => {
 			// Do nothing if the component hasn't been mounted.
-			if (!contentRef.current) return;
+			if (!ref.current) return;
 
-			// Do nothing if the focused element is inside the contentRef or the contentRef it self.
-			if (contentRef.current.contains(e.target)) return;
+			// Do nothing if the focused element is inside the ref or the ref it self.
+			if (ref.current.contains(e.target)) return;
 
-			closeHandler();
+			handler();
 		};
 
 		document.addEventListener("focus", listener, true);
@@ -17,7 +17,7 @@ const useFocusOutside = (contentRef, closeHandler) => {
 		return () => {
 			document.removeEventListener("focus", listener, true);
 		};
-	}, [contentRef, closeHandler]);
+	}, [ref, handler]);
 };
 
 export default useFocusOutside;

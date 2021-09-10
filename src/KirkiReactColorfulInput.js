@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import reactCSS from 'reactcss';
-import useClickOutside from "./useClickOutside";
-import useFocusOutside from "./useFocusOutside";
 
 const KirkiReactColorfulInput = (props) => {
-	const { useHueMode, onChange, parseHueModeValue, initialColor = "", color = "" } = props;
+	const { useHueMode, onChange, parseHueModeValue, triggerStyle, initialColor = "", color = "" } = props;
 	const [value, setValue] = useState(() => color);
 
 	const handleChange = useCallback(
@@ -28,20 +26,14 @@ const KirkiReactColorfulInput = (props) => {
 		onChange(initialColor); // Run onChange handler passed by `KirkiReactColorfulForm` component.
 	};
 
+	const togglePickerHandler = 'button' === triggerStyle ? () => { } : props.togglePickerHandler;
+	const openPickerHandler = 'button' === triggerStyle ? () => { } : props.openPickerHandler;
+
 	// Update the local state when `color` property value is changed.
 	useEffect(() => {
 		// We don't need to convert the color since it's using the customizer value.
 		setValue(color);
 	}, [color]);
-
-	// Reference to the input wrapper div.
-	const inputRef = useRef(null);
-
-	// Handle outside click to close the picker popup.
-	useClickOutside(inputRef, props.pickerRef, props.closePickerHandler);
-
-	// Handle outside focus to close the picker popup.
-	useFocusOutside(props.contentRef, props.closePickerHandler);
 
 	const pickersWithAlpha = ['RgbaColorPicker', 'HslaColorPicker', 'HsvaColorPicker'];
 
@@ -57,24 +49,27 @@ const KirkiReactColorfulInput = (props) => {
 	});
 
 	return (
-		<div className="kirki-react-colorful-input-wrapper" ref={inputRef}>
-			<div className="kirki-react-colorful-input-control">
+		<div className="kirki-color-input-wrapper">
+			<div className="kirki-color-input-control">
 				{!useHueMode &&
-					<div className="kirki-react-colorful-color-preview-wrapper" style={styles.colorPreviewWrapper}>
-						<button type="button" className="kirki-react-colorful-color-preview" style={styles.colorPreview} onClick={props.togglePickerHandler}></button>
+					<div className="kirki-color-preview-wrapper" style={styles.colorPreviewWrapper}>
+						<button type="button" className="kirki-color-preview" style={styles.colorPreview} onClick={togglePickerHandler}></button>
 					</div>
 				}
 				<input
+					ref={props.inputRef}
 					type="text"
 					value={value}
-					className="kirki-react-colorful-input"
+					className="kirki-color-input"
 					spellCheck="false"
-					onFocus={props.openPickerHandler}
+					onFocus={openPickerHandler}
 					onChange={handleChange}
 				/>
-				<button type="button" className="kirki-react-colorful-reset-button" onClick={resetColor} style={{display: props.isPickerOpen ? 'flex' : 'none'}}>
-					<i className="dashicons dashicons-image-rotate"></i>
-				</button>
+				{'input' === triggerStyle &&
+					<button type="button" className="kirki-control-reset" onClick={resetColor} style={{ display: props.isPickerOpen ? 'flex' : 'none' }}>
+						<i className="dashicons dashicons-image-rotate"></i>
+					</button>
+				}
 			</div>
 		</div>
 	);
