@@ -1,29 +1,19 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import reactCSS from 'reactcss';
 
 const KirkiReactColorfulInput = (props) => {
-	const { useHueMode, onChange, parseHueModeValue, triggerStyle, initialColor = "", color = "" } = props;
+	const { onChange, onReset, triggerStyle, color = "" } = props;
 	const [value, setValue] = useState(() => color);
 
 	const handleChange = useCallback(
 		(e) => {
-			const valueForInput = useHueMode ? parseHueModeValue(valueForInput) : e.target.value;
-
-			setValue(valueForInput);
-			onChange(valueForInput); // Run onChange handler passed by `KirkiReactColorfulForm` component.
+			onChange(e.target.value); // Run onChange handler passed by `KirkiReactColorfulForm` component.
 		},
 		[onChange]
 	);
 
 	const resetColor = () => {
-		let valueForInput = '';
-
-		if ('' !== initialColor) {
-			valueForInput = useHueMode ? parseHueModeValue(initialColor) : initialColor;
-		}
-
-		setValue(valueForInput);
-		onChange(initialColor); // Run onChange handler passed by `KirkiReactColorfulForm` component.
+		onReset(props.initialColor); // Run onReset handler passed by `KirkiReactColorfulForm` component.
 	};
 
 	const togglePickerHandler = 'button' === triggerStyle ? () => { } : props.togglePickerHandler;
@@ -31,11 +21,11 @@ const KirkiReactColorfulInput = (props) => {
 
 	// Update the local state when `color` property value is changed.
 	useEffect(() => {
-		// We don't need to convert the color since it's using the customizer value.
+		// We don't need to convert the color since it's already handled in parent component.
 		setValue(color);
 	}, [color]);
 
-	const pickersWithAlpha = ['RgbaColorPicker', 'HslaColorPicker', 'HsvaColorPicker'];
+	const pickersWithAlpha = ['RgbaColorPicker', 'RgbaStringColorPicker', 'HslaColorPicker', 'HslaStringColorPicker', 'HsvaColorPicker', 'HsvaStringColorPicker'];
 
 	const styles = reactCSS({
 		'default': {
@@ -51,7 +41,7 @@ const KirkiReactColorfulInput = (props) => {
 	return (
 		<div className="kirki-color-input-wrapper">
 			<div className="kirki-color-input-control">
-				{!useHueMode &&
+				{!props.useHueMode &&
 					<div className="kirki-color-preview-wrapper" style={styles.colorPreviewWrapper}>
 						<button type="button" className="kirki-color-preview" style={styles.colorPreview} onClick={togglePickerHandler}></button>
 					</div>

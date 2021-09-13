@@ -2,18 +2,11 @@ import { useState, useEffect } from "react";
 import reactCSS from 'reactcss';
 
 const KirkiReactColorfulButton = (props) => {
-	const { useHueMode, onChange, parseHueModeValue, buttonText, initialColor = "", color = "" } = props;
+	const { color = "" } = props;
 	const [value, setValue] = useState(() => color);
 
 	const resetColor = () => {
-		let valueForInput = '';
-
-		if ('' !== initialColor) {
-			valueForInput = useHueMode ? parseHueModeValue(initialColor) : initialColor;
-		}
-
-		setValue(valueForInput);
-		onChange(initialColor); // Run onChange handler passed by `KirkiReactColorfulForm` component.
+		props.onReset(props.initialColor); // Run onReset handler passed by `KirkiReactColorfulForm` component.
 	};
 
 	// Update the local state when `color` property value is changed.
@@ -22,7 +15,7 @@ const KirkiReactColorfulButton = (props) => {
 		setValue(color);
 	}, [color]);
 
-	const pickersWithAlpha = ['RgbaColorPicker', 'HslaColorPicker', 'HsvaColorPicker'];
+	const pickersWithAlpha = ['RgbaColorPicker', 'RgbaStringColorPicker', 'HslaColorPicker', 'HslaStringColorPicker', 'HsvaColorPicker', 'HsvaStringColorPicker'];
 
 	const styles = reactCSS({
 		'default': {
@@ -30,7 +23,7 @@ const KirkiReactColorfulButton = (props) => {
 				backgroundImage: (pickersWithAlpha.includes(props.pickerComponent) ? 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAAHnlligAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHJJREFUeNpi+P///4EDBxiAGMgCCCAGFB5AADGCRBgYDh48CCRZIJS9vT2QBAggFBkmBiSAogxFBiCAoHogAKIKAlBUYTELAiAmEtABEECk20G6BOmuIl0CIMBQ/IEMkO0myiSSraaaBhZcbkUOs0HuBwDplz5uFJ3Z4gAAAABJRU5ErkJggg==")' : 'none'),
 			},
 			colorPreview: {
-				backgroundColor: value,
+				backgroundColor: value ? value : 'transparent',
 			}
 		},
 	});
@@ -38,10 +31,10 @@ const KirkiReactColorfulButton = (props) => {
 	return (
 		<div className="kirki-trigger-button-wrapper">
 			<button type="button" className="kirki-trigger-button" onClick={props.togglePickerHandler} style={styles.triggerButton}>
-				{!useHueMode &&
+				{!props.useHueMode &&
 					<span className="kirki-color-preview" style={styles.colorPreview}></span>
 				}
-				<span className="kirki-button-text">{buttonText}</span>
+				<span className="kirki-button-text">{props.buttonText}</span>
 			</button>
 
 			<button

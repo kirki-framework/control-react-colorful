@@ -59,9 +59,23 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 	renderContent: function renderContent() {
 		const control = this;
 		const useHueMode = 'hue' === control.params.mode;
+		const choices = control.params.choices;
 
-		// We need to define the pickerComponent no matter formComponent is set or not.
-		let pickerComponent = control.params.choices.formComponent ? control.params.choices.formComponent : (control.params.choices.alpha ? 'RgbaColorPicker' : 'HexColorPicker');
+		let pickerComponent;
+
+		if (choices.formComponent) {
+			// The "save_as" choice is ignored if formComponent is specified.
+			pickerComponent = choices.formComponent;
+		} else {
+			pickerComponent = choices.alpha ? 'RgbaStringColorPicker' : 'HexColorPicker';
+
+			// The "save_as" choice is ignored for HexColorPicker.
+			if (choices.save_as && 'array' === choices.save_as && choices.alpha) {
+				pickerComponent = 'RgbaColorPicker';
+			}
+
+		}
+
 		pickerComponent = useHueMode ? 'HueColorPicker' : pickerComponent;
 
 		const form = <KirkiReactColorfulForm
@@ -70,7 +84,7 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 			customizerSetting={control.setting}
 			useHueMode={useHueMode}
 			pickerComponent={pickerComponent}
-			value={control.setting.get()}
+			value={control.params.value}
 			setNotificationContainer={control.setNotificationCotainer}
 		/>;
 
@@ -78,10 +92,6 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 			form,
 			control.container[0]
 		);
-
-		if (false !== control.params.choices.allowCollapse) {
-			control.container.addClass('allowCollapse colorPickerIsCollapsed');
-		}
 	},
 
 	/**
@@ -120,7 +130,7 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 		});
 	},
 
-	updateComponentState: () => {},
+	updateComponentState: () => { },
 
 	/**
 	 * Handle removal/de-registration of the control.
