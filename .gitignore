@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+# caches
+.parcel-cache
+
 # testing
 /coverage
 
