@@ -1,4 +1,4 @@
-/* global wp, jQuery, React, ReactDOM */
+import ReactDOM from 'react-dom';
 import KirkiReactColorfulForm from './KirkiReactColorfulForm';
 
 /**
