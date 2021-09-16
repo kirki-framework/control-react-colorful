@@ -143,6 +143,11 @@ const KirkiReactColorfulForm = (props) => {
 		{props.description ? controlDescription : ''}
 	</label>;
 
+	const formRef = useRef(null); // Reference to the form div.
+	const inputRef = useRef(null); // Reference to the form input.
+	const pickerRef = useRef(null); // Reference to the picker popup.
+
+	const [widthManipulatedClass, setWidthManipulatedClass] = useState('');
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 	const togglePicker = () => {
@@ -154,7 +159,28 @@ const KirkiReactColorfulForm = (props) => {
 	}
 
 	const openPicker = () => {
-		if (!isPickerOpen) setIsPickerOpen(true);
+		if (!isPickerOpen) {
+			if (control.container[0].clientWidth < 250) {
+				pickerRef.current.style.width = control.container[0].parentNode.firstElementChild.clientWidth + 'px';
+				if ('picker-width-manipulated' !== widthManipulatedClass) setWidthManipulatedClass('picker-width-manipulated');
+
+				if (choices.is_right_sided) {
+					let padding = window.getComputedStyle(control.container[0].parentNode).getPropertyValue('padding-left');
+					const number = parseInt(padding, 10);
+					const unit = padding.replace(number, '');
+
+					padding = number / 2;
+					padding += unit;
+
+					pickerRef.current.style.left = 'calc(-100% - ' + padding + ')';
+				}
+			} else {
+				if ('' !== widthManipulatedClass) setWidthManipulatedClass('');
+				pickerRef.current.removeAttribute('style');
+			}
+
+			setIsPickerOpen(true);
+		}
 	}
 
 	const closePicker = () => {
@@ -214,11 +240,8 @@ const KirkiReactColorfulForm = (props) => {
 	}
 
 	let formClassName = useHueMode ? 'kirki-control-form use-hue-mode' : 'kirki-control-form';
-	formClassName += ' use-' + choices.triggerStyle + '-trigger';
-
-	const formRef = useRef(null); // Reference to the form div.
-	const inputRef = useRef(null); // Reference to the form input.
-	const pickerRef = useRef(null); // Reference to the picker popup.
+	formClassName += ' use-' + choices.triggerStyle + '-trigger ' + widthManipulatedClass;
+	formClassName += choices.is_right_sided ? ' picker-is-right-sided' : '';
 
 	// Handle outside focus to close the picker popup.
 	useFocusOutside(formRef, closePicker);
