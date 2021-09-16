@@ -85,7 +85,7 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
 			useHueMode={useHueMode}
 			pickerComponent={pickerComponent}
 			value={control.params.value}
-			setNotificationContainer={control.setNotificationCotainer}
+			setNotificationContainer={control.setNotificationContainer}
 		/>;
 
 		ReactDOM.render(
