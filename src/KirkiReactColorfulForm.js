@@ -1,13 +1,13 @@
 import { useState, useRef } from "react";
 import { HexColorPicker, RgbColorPicker, RgbaColorPicker, RgbStringColorPicker, RgbaStringColorPicker, HslColorPicker, HslaColorPicker, HslStringColorPicker, HslaStringColorPicker, HsvColorPicker, HsvaColorPicker, HsvStringColorPicker, HsvaStringColorPicker } from "react-colorful";
-import KirkiReactColorfulButton from "./KirkiReactColorfulButton";
-import KirkiReactColorfulInput from "./KirkiReactColorfulInput";
-import KirkiReactColorfulSwatches from "./KirkiReactColorfulSwatches";
-import convertColorForPicker from "./utils/convertColorForPicker";
-import convertColorForCustomizer from "./utils/convertColorForCustomizer";
-import convertColorForInput from "./utils/convertColorForInput";
-import useClickOutside from "./useClickOutside";
-import useFocusOutside from "./useFocusOutside";
+import KirkiReactColorfulButton from "./js/components/KirkiReactColorfulButton";
+import KirkiReactColorfulInput from "./js/components/KirkiReactColorfulInput";
+import KirkiReactColorfulSwatches from "./js/components/KirkiReactColorfulSwatches";
+import convertColorForPicker from "./js/utils/convertColorForPicker";
+import convertColorForCustomizer from "./js/utils/convertColorForCustomizer";
+import convertColorForInput from "./js/utils/convertColorForInput";
+import useClickOutside from "./js/hooks/useClickOutside";
+import useFocusOutside from "./js/hooks/useFocusOutside";
 
 /**
  * The form component of Kirki React Colorful.
@@ -149,6 +149,7 @@ const KirkiReactColorfulForm = (props) => {
 
 	const [widthManipulatedClass, setWidthManipulatedClass] = useState('');
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
+	const [mountPicker, setMountPicker] = useState(false);
 
 	const togglePicker = () => {
 		if (isPickerOpen) {
@@ -179,12 +180,18 @@ const KirkiReactColorfulForm = (props) => {
 				pickerRef.current.removeAttribute('style');
 			}
 
+			setMountPicker(true);
 			setIsPickerOpen(true);
 		}
 	}
 
 	const closePicker = () => {
-		if (isPickerOpen) setIsPickerOpen(false);
+		if (isPickerOpen) {
+			setTimeout(() => {
+				setMountPicker(false);
+			}, 200 + 50); // 200 is the closing animation duration set in control.scss and 50 is the extra wait before unmounting the picker.
+			setIsPickerOpen(false);
+		}
 	}
 
 	let KirkiPickerComponent;
@@ -298,17 +305,23 @@ const KirkiReactColorfulForm = (props) => {
 			{props.label || props.description ? controlLabel : ''}
 			{controlNotifications}
 			{'button' === choices.triggerStyle ? formButton : formInput}
+
 			<div ref={pickerRef} className={isPickerOpen ? pickerComponent + ' colorPickerContainer is-open' : pickerComponent + ' colorPickerContainer'}>
-				{!useHueMode &&
+
+				{!useHueMode && mountPicker &&
 					<KirkiReactColorfulSwatches
 						colors={choices.swatches}
 						onClick={handleSwatchesClick}
 					/>
 				}
-				<KirkiPickerComponent
-					color={pickerValue}
-					onChange={handlePickerChange}
-				/>
+
+				{mountPicker &&
+					<KirkiPickerComponent
+						color={pickerValue}
+						onChange={handlePickerChange}
+					/>
+				}
+
 				{'button' === choices.triggerStyle ? formInput : ''}
 			</div>
 		</div>

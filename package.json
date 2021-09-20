@@ -31,6 +31,9 @@
     "jquery": {
       "global": "jQuery"
     },
+    "wp": {
+      "global": "wp"
+    },
     "react": {
       "global": "React"
     },
@@ -40,8 +43,8 @@
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "build": "parcel build  src/control.js --dist-dir dist",
-    "dev": "parcel build  src/control.js --no-optimize --dist-dir dist",
-    "watch": "parcel watch src/control.js --dist-dir dist"
+    "build": "parcel build  src/control.js src/preview.js --dist-dir dist",
+    "dev": "parcel build  src/control.js src/preview.js --no-optimize --dist-dir dist",
+    "watch": "parcel watch src/control.js src/preview.js --dist-dir dist"
   }
 }
