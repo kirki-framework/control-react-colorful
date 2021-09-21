@@ -4,6 +4,17 @@ This is a simple control for the WordPress Customizer using [react-colorful](htt
 Inspired by [Gutenberg change](https://github.com/WordPress/gutenberg/pull/33714), we decided to use _react-colorful_ instead of _react-color_ for Kirki 4.
 It has simpler interface and [much smaller bundle size](https://github.com/omgovich/react-colorful#why-react-colorful).
 
+## Table of Contents
+- [kirki-framework/control-react-colorful](#kirki-frameworkcontrol-react-colorful)
+	- [Table of Contents](#table-of-contents)
+	- [Installation](#installation)
+	- [Usage](#usage)
+		- [Using the simplified API](#using-the-simplified-api)
+		- [Using the Customizer API](#using-the-customizer-api)
+	- [Supported Color Models](#supported-color-models)
+	- [Development](#development)
+	- [License](#license)
+
 ## Installation
 
 To install this package use `composer`:
@@ -46,33 +57,46 @@ new \Kirki\Field\ReactColorful( [
 
 ```php
 /**
- * Add Customizer settings & controls.
+ * Register customizer settings and controls.
  *
- * @since 1.0
- * @param WP_Customize_Manager $wp_customize The WP_Customize_Manager object.
- * @return void
+ * @param \WP_Customize_Manager $wp_customize The Customizer object.
  */
-add_action( 'customize_register', function( $wp_customize ) {
+function my_customize_register_function( $wp_customize ) {
 
-    // Add setting.
-	$wp_customize->add_setting( 'my_control_setting_id', [
-		'type'              => 'theme_mod',
-		'capability'        => 'edit_theme_options',
-		'default'           => '#0000ff',
-		'transport'         => 'refresh', // Or postMessage.
-		'sanitize_callback' => [ '\kirki\Field\Color', 'sanitize' ], // Or a custom sanitization callback.
-	] );
+	// Add setting.
+	$wp_customize->add_setting(
+		'my_control_setting_id',
+		[
+			'type'              => 'theme_mod',
+			'capability'        => 'edit_theme_options',
+			'default'           => '#0000ff',
+			'transport'         => 'refresh', // Or 'postMessage'.
+			'sanitize_callback' => [ '\Kirki\Field\ReactColorful', 'sanitize' ],
+		]
+	);
 
-    // Add control.
-	$wp_customize->add_control( new \Kirki\Control\ReactColorful( $wp_customize, 'my_control_setting_id', [
-		'label'       => esc_html__( 'My Color Control', 'textdomain' ),
-		'description' => esc_html__( 'A description here.', 'kirki' ),
-		'section'     => 'my_section_id',
-		'choices'     => [
-			'formComponent' => 'HexColorPicker',
-		],
-	] ) );
-} );
+	// Add control.
+	$wp_customize->add_control(
+		new \Kirki\Control\ReactColorful(
+			$wp_customize,
+			'my_control_setting_id',
+			[
+				'label'       => esc_html__( 'My Color Control', 'textdomain' ),
+				'description' => esc_html__( 'A description here.', 'kirki' ),
+				'section'     => 'my_section_id',
+				'choices'     => [
+					'formComponent' => 'HexColorPicker',
+				],
+			]
+		)
+	);
+
+	// Add more settings...
+
+	// Add more controls...
+
+}
+add_action( 'customize_register', 'my_customize_register_function' );
 ```
 
 ## Supported Color Models
@@ -101,9 +125,9 @@ For information about the arguments you can use, please refer to the [react-colo
 
 ## Development
 
-If you want to make changes to this control, you can edit the JS files in the `src` folder. Once done editing you can update the compiled script by running the following:
+If you want to make changes to this control, you can edit the JS files in the `src` folder.
+- If you haven't installed the packages, then run `npm install`
+- After done editing, run `npm run build`
 
-```bash
-npm install
-npm run build
-```
+## License
+[MIT License](https://oss.ninja/mit?organization=Kirki%20Framework)
