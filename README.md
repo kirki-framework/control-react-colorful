@@ -48,7 +48,7 @@ new \Kirki\Field\ReactColorful( [
 	'section'     => 'my_section_id',
 	'default'     => '#ff0000',
 	'choices'     => [
-		'formComponent' => 'HexColorPicker',
+		'form_component' => 'HexColorPicker',
 	],
 ] );
 ```
@@ -85,7 +85,7 @@ function my_customize_register_function( $wp_customize ) {
 				'description' => esc_html__( 'A description here.', 'kirki' ),
 				'section'     => 'my_section_id',
 				'choices'     => [
-					'formComponent' => 'HexColorPicker',
+					'form_component' => 'HexColorPicker',
 				],
 			]
 		)
@@ -102,9 +102,9 @@ add_action( 'customize_register', 'my_customize_register_function' );
 ## Supported Color Models
 
 You can pass arguments to the `react-colorful` component using the `choices` argument in the control.
-The only **required** argument here is `formComponent`.
+The only **required** argument here is `form_component`.
 
-And in the `formComponent` argument you can define the type of control you want, using one of the the following:
+And in the `form_component` argument you can define the type of control you want, using one of the the following:
 
 - `HexColorPicker`
 - `RgbColorPicker`
@@ -120,7 +120,7 @@ And in the `formComponent` argument you can define the type of control you want,
 - `HsvaColorPicker`
 - `HsvaStringColorPicker`
 
-Their value will be saved either as an array or as a string in database (depends on `formComponent` value).
+Their value will be saved either as an array or as a string in database (depends on `form_component` value).
 For information about the arguments you can use, please refer to the [react-colorful](https://github.com/omgovich/react-colorful/) documentation.
 
 ## Development
