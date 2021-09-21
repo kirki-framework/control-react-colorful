@@ -14,9 +14,10 @@ composer require kirki-framework/control-react-colorful:dev-nightly
 
 **NOTE**:
 If you get errors with the package dependencies, please run the following first:
+
 ```bash
 composer require kirki-framework/control-base:dev-nightly
-composer require kirki-framework/field:dev-nightly
+composer require kirki-framework/field:dev-master
 composer require kirki-framework/url-getter:dev-nightly
 ```
 
@@ -30,19 +31,19 @@ This package contains the control itself, as well as a simplified API for the Wo
 
 ```php
 new \Kirki\Field\ReactColorful( [
-	'settings'    => 'my_setting',
+	'settings'    => 'my_control_setting_id',
 	'label'       => esc_html__( 'My Color Control', 'textdomain' ),
 	'description' => esc_html__( 'A description here.', 'kirki' ),
-	'section'     => 'title_tagline',
-	'default'     => '#0008DC',
+	'section'     => 'my_section_id',
+	'default'     => '#ff0000',
 	'choices'     => [
-		// `HexColorPicker` is the default.
 		'formComponent' => 'HexColorPicker',
 	],
 ] );
 ```
 
 ### Using the Customizer API
+
 ```php
 /**
  * Add Customizer settings & controls.
@@ -54,21 +55,20 @@ new \Kirki\Field\ReactColorful( [
 add_action( 'customize_register', function( $wp_customize ) {
 
     // Add setting.
-	$wp_customize->add_setting( 'my_setting', [
+	$wp_customize->add_setting( 'my_control_setting_id', [
 		'type'              => 'theme_mod',
 		'capability'        => 'edit_theme_options',
-		'default'           => '#0008DC',
+		'default'           => '#0000ff',
 		'transport'         => 'refresh', // Or postMessage.
 		'sanitize_callback' => [ '\kirki\Field\Color', 'sanitize' ], // Or a custom sanitization callback.
 	] );
 
     // Add control.
-	$wp_customize->add_control( new \Kirki\Control\ReactColorful( $wp_customize, 'my_setting', [
+	$wp_customize->add_control( new \Kirki\Control\ReactColorful( $wp_customize, 'my_control_setting_id', [
 		'label'       => esc_html__( 'My Color Control', 'textdomain' ),
 		'description' => esc_html__( 'A description here.', 'kirki' ),
-		'section'     => 'title_tagline',
+		'section'     => 'my_section_id',
 		'choices'     => [
-			// `HexColorPicker` is the default.
 			'formComponent' => 'HexColorPicker',
 		],
 	] ) );
@@ -76,17 +76,27 @@ add_action( 'customize_register', function( $wp_customize ) {
 ```
 
 ## Supported Color Models
-You can pass arguments to the `react-colorful` using the `choices` argument in the control.
+
+You can pass arguments to the `react-colorful` component using the `choices` argument in the control.
 The only **required** argument here is `formComponent`.
 
 And in the `formComponent` argument you can define the type of control you want, using one of the the following:
-* `HexColorPicker`
-* `RgbColorPicker`
-* `RgbaColorPicker`
-* `HslColorPicker`
-* `HslaColorPicker`
 
-Their value will be saved as string in database.
+- `HexColorPicker`
+- `RgbColorPicker`
+- `RgbStringColorPicker`
+- `RgbaColorPicker`
+- `RgbaStringColorPicker`
+- `HslColorPicker`
+- `HslStringColorPicker`
+- `HslaColorPicker`
+- `HslaStringColorPicker`
+- `HsvColorPicker`
+- `HsvStringColorPicker`
+- `HsvaColorPicker`
+- `HsvaStringColorPicker`
+
+Their value will be saved either as an array or as a string in database (depends on `formComponent` value).
 For information about the arguments you can use, please refer to the [react-colorful](https://github.com/omgovich/react-colorful/) documentation.
 
 ## Development
