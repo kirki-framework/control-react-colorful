@@ -149,7 +149,6 @@ const KirkiReactColorfulForm = (props) => {
 
 	const [widthManipulatedClass, setWidthManipulatedClass] = useState('');
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
-	const [mountPicker, setMountPicker] = useState(false);
 
 	const togglePicker = () => {
 		if (isPickerOpen) {
@@ -180,16 +179,12 @@ const KirkiReactColorfulForm = (props) => {
 				pickerRef.current.removeAttribute('style');
 			}
 
-			setMountPicker(true);
 			setIsPickerOpen(true);
 		}
 	}
 
 	const closePicker = () => {
 		if (isPickerOpen) {
-			setTimeout(() => {
-				setMountPicker(false);
-			}, 200 + 50); // 200 is the closing animation duration set in control.scss and 50 is the extra wait before unmounting the picker.
 			setIsPickerOpen(false);
 		}
 	}
@@ -308,19 +303,17 @@ const KirkiReactColorfulForm = (props) => {
 
 			<div ref={pickerRef} className={isPickerOpen ? pickerComponent + ' colorPickerContainer is-open' : pickerComponent + ' colorPickerContainer'}>
 
-				{!useHueMode && mountPicker &&
+				{!useHueMode &&
 					<KirkiReactColorfulSwatches
 						colors={choices.swatches}
 						onClick={handleSwatchesClick}
 					/>
 				}
 
-				{mountPicker &&
-					<KirkiPickerComponent
-						color={pickerValue}
-						onChange={handlePickerChange}
-					/>
-				}
+				<KirkiPickerComponent
+					color={pickerValue}
+					onChange={handlePickerChange}
+				/>
 
 				{'button' === choices.triggerStyle ? formInput : ''}
 			</div>
