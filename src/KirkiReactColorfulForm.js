@@ -271,7 +271,7 @@ const KirkiReactColorfulForm = (props) => {
 		inputRef={inputRef}
 		useHueMode={useHueMode}
 		color={inputValue}
-		initialColor={props.value}
+		initialColor={'' !== props.default && 'undefined' !== typeof props.default ? props.default : props.value}
 		triggerStyle={choices.triggerStyle}
 		isPickerOpen={isPickerOpen}
 		togglePickerHandler={togglePicker}
@@ -288,7 +288,7 @@ const KirkiReactColorfulForm = (props) => {
 			useHueMode={useHueMode}
 			buttonText={choices.buttonText}
 			color={inputValue}
-			initialColor={props.value}
+			initialColor={'' !== props.default && 'undefined' !== typeof props.default ? props.default : props.value}
 			isPickerOpen={isPickerOpen}
 			togglePickerHandler={togglePicker}
 			onReset={handleReset}
