@@ -31,7 +31,7 @@
   .colorPickerContainer.is-open {
     opacity: 1;
     visibility: visible;
-    transition: all 0.1s;
+    transition: all 0.2s;
   }
 
   .colorPickerContainer {
@@ -46,7 +46,8 @@
     z-index: 9999;
 
     opacity: 0;
-    transition: all 0.1s;
+    visibility: hidden;
+    transition: all 0.2s;
   }
 
   .colorPickerContainer::before {
