@@ -4,17 +4,17 @@ import { useEffect } from "react";
  * Code was taken and then modified from https://codesandbox.io/s/opmco?file=/src/useClickOutside.js:0-1192
  * It was improved version of https://usehooks.com/useOnClickOutside/
  */
-const useClickOutside = (inputRef, pickerRef, handler) => {
+const useClickOutside = (resetRef, pickerRef, handler) => {
 	useEffect(() => {
 		let startedWhenMounted = false;
 		let startedInside = false;
 
 		const listener = (event) => {
-			// Do nothing if `mousedown` or `touchstart` started either inside inputRef or pickerRef element
+			// Do nothing if `mousedown` or `touchstart` started either inside resetRef or pickerRef element
 			if (!startedWhenMounted || startedInside) return;
 
-			// Do nothing if clicking inputRef's element or descendent elements
-			if (!inputRef.current || inputRef.current.contains(event.target)) return;
+			// Do nothing if clicking resetRef's element or descendent elements
+			if (!resetRef.current || resetRef.current.contains(event.target)) return;
 
 			// Do nothing if clicking pickerRef's element or descendent elements
 			if (!pickerRef.current || pickerRef.current.contains(event.target)) return;
@@ -23,8 +23,8 @@ const useClickOutside = (inputRef, pickerRef, handler) => {
 		};
 
 		const validateEventStart = (event) => {
-			startedWhenMounted = inputRef.current && pickerRef.current;
-			startedInside = (inputRef.current && inputRef.current.contains(event.target)) || (pickerRef.current && pickerRef.current.contains(event.target));
+			startedWhenMounted = resetRef.current && pickerRef.current;
+			startedInside = (resetRef.current && resetRef.current.contains(event.target)) || (pickerRef.current && pickerRef.current.contains(event.target));
 		};
 
 		document.addEventListener("mousedown", validateEventStart);
@@ -36,7 +36,7 @@ const useClickOutside = (inputRef, pickerRef, handler) => {
 			document.removeEventListener("touchstart", validateEventStart);
 			document.removeEventListener("click", listener);
 		};
-	}, [inputRef, pickerRef, handler]);
+	}, [resetRef, pickerRef, handler]);
 };
 
 export default useClickOutside;

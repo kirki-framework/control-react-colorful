@@ -103,12 +103,6 @@ class ReactColorful extends Base {
 			$this->json['choices']['formComponent'] = $this->choices['form_component'];
 		}
 
-		// Trigger style.
-		$this->json['choices']['triggerStyle'] = isset( $this->choices['trigger_style'] ) ? $this->choices['trigger_style'] : 'input';
-
-		// Trigger style.
-		$this->json['choices']['buttonText'] = isset( $this->choices['button_text'] ) ? $this->choices['button_text'] : '';
-
 		$this->remove_unused_json_props();
 
 	}
