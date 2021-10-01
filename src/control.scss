@@ -30,9 +30,8 @@
 
   .colorPickerContainer.is-open {
     opacity: 1;
-    transform: scale3d(1, 1, 1);
-    transition: opacity, visibility, transform 0.2s;
     visibility: visible;
+    transition: all 0.2s;
   }
 
   .colorPickerContainer {
@@ -46,9 +45,7 @@
     z-index: 9999;
 
     opacity: 0;
-    transform: scale3d(0, 0, 0);
-    transform-origin: center top;
-    transition: opacity 0.1s, visibility 0.1s, transform 0.75s;
+    transition: all 0.1s;
   }
 
   .colorPickerContainer::before {
