@@ -282,16 +282,27 @@
       visibility: visible;
     }
   }
-}
 
-[data-kirki-parent-control-type="kirki-multicolor"] {
-  margin-right: 8px;
-  padding-right: 0;
-  width: 35px;
+  &[data-kirki-parent-control-type="kirki-multicolor"] {
+    margin-right: 8px;
+    padding-right: 0;
+    width: 35px;
 
-  .kirki-control-reset {
-    top: -16px;
-    right: 8px;
-    z-index: 100000;
+    .kirki-control-reset {
+      top: -16px;
+      right: 8px;
+    }
+  }
+
+  &[data-kirki-parent-control-type="kirki-typography"] {
+    .colorPickerContainer {
+      top: 55px;
+    }
+
+    .kirki-control-reset {
+      top: 30px;
+      right: auto;
+      left: 35px;
+    }
   }
 }

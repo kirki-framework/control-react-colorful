@@ -303,7 +303,7 @@ const KirkiReactColorfulForm = (props) => {
     </>
   );
 
-  const usePositionFixed = "default" !== choices.labelStyle ? true : false;
+  const usePositionFixed = "tooltip" === choices.labelStyle ? true : false;
 
   let formClassName = useHueMode
     ? "kirki-control-form use-hue-mode"
@@ -318,11 +318,14 @@ const KirkiReactColorfulForm = (props) => {
   let pickerContainerStyle = {};
 
   if (usePositionFixed) {
-    const panelWidth = control.container[0].parentNode.getBoundingClientRect().width;
-		const pickerWidth = pickerRef.current ? pickerRef.current.getBoundingClientRect().width : 0;
-		const padding = (panelWidth - pickerWidth) / 2;
+    const panelWidth =
+      control.container[0].parentNode.getBoundingClientRect().width;
+    const pickerWidth = pickerRef.current
+      ? pickerRef.current.getBoundingClientRect().width
+      : 0;
+    const padding = (panelWidth - pickerWidth) / 2;
 
-		pickerContainerStyle.left =
+    pickerContainerStyle.left =
       control.container[0].parentNode.offsetLeft + padding + "px";
     pickerContainerStyle.top = control.container[0].offsetTop + 80 + "px";
   }
@@ -349,23 +352,43 @@ const KirkiReactColorfulForm = (props) => {
     </>
   );
 
-  return (
-    <>
-      <div className={formClassName} ref={formRef} tabIndex="1">
-        {"tooltip" === choices.labelStyle ? (
-					<>
+  let pickerHeader;
+
+  switch (choices.labelStyle) {
+    case "tooltip":
+      pickerHeader = (
+        <>
           {pickerTrigger}
           <div className="kirki-label-tooltip">{controlHeader}</div>
         </>
-				) : (
-          <>
-            <div className="kirki-control-cols">
-              <div className="kirki-control-left-col">{controlHeader}</div>
-              <div className="kirki-control-right-col">{pickerTrigger}</div>
-            </div>
-          </>
-        )}
+      );
+      break;
 
+    case "top":
+      pickerHeader = (
+        <>
+          {controlHeader}
+          {pickerTrigger}
+        </>
+      );
+      break;
+
+    default:
+      pickerHeader = (
+        <>
+          <div className="kirki-control-cols">
+            <div className="kirki-control-left-col">{controlHeader}</div>
+            <div className="kirki-control-right-col">{pickerTrigger}</div>
+          </div>
+        </>
+      );
+      break;
+  }
+
+  return (
+    <>
+      <div className={formClassName} ref={formRef} tabIndex="1">
+        {pickerHeader}
         <div
           ref={pickerRef}
           className={pickerContainerClassName}
