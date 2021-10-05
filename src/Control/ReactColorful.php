@@ -95,6 +95,9 @@ class ReactColorful extends Base {
 		// The save_as.
 		$this->json['choices']['saveAs'] = isset( $this->choices['save_as'] ) ? $this->choices['save_as'] : 'string';
 
+		// The label_style.
+		$this->json['choices']['labelStyle'] = isset( $this->choices['label_style'] ) ? $this->choices['label_style'] : 'default';
+
 		// Color swatches.
 		$this->json['choices']['swatches'] = $this->color_swatches();
 
@@ -120,6 +123,10 @@ class ReactColorful extends Base {
 
 		if ( isset( $this->json['choices']['save_as'] ) ) {
 			unset( $this->json['choices']['save_as'] );
+		}
+
+		if ( isset( $this->json['choices']['label_style'] ) ) {
+			unset( $this->json['choices']['label_style'] );
 		}
 
 		if ( isset( $this->choices['form_component'] ) ) {

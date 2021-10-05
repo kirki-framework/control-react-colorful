@@ -169,17 +169,12 @@ const KirkiReactColorfulForm = (props) => {
       dangerouslySetInnerHTML={{ __html: props.label }}
     />
   );
+
   let controlDescription = (
     <span
       className="description customize-control-description"
       dangerouslySetInnerHTML={{ __html: props.description }}
     ></span>
-  );
-  let controlNotifications = (
-    <div
-      className="customize-control-notifications-container"
-      ref={props.setNotificationContainer}
-    ></div>
   );
 
   controlLabel = (
@@ -195,7 +190,6 @@ const KirkiReactColorfulForm = (props) => {
   const pickerRef = useRef(null); // Reference to the picker popup.
   const resetRef = useRef(null); // Reference to the picker popup.
 
-  const [widthManipulatedClass, setWidthManipulatedClass] = useState("");
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   const togglePicker = () => {
@@ -211,23 +205,7 @@ const KirkiReactColorfulForm = (props) => {
       if (control.container[0].clientWidth < 250) {
         pickerRef.current.style.width =
           control.container[0].parentNode.firstElementChild.clientWidth + "px";
-        if ("picker-width-manipulated" !== widthManipulatedClass)
-          setWidthManipulatedClass("picker-width-manipulated");
-
-        if (choices.is_right_sided) {
-          let padding = window
-            .getComputedStyle(control.container[0].parentNode)
-            .getPropertyValue("padding-left");
-          const number = parseInt(padding, 10);
-          const unit = padding.replace(number, "");
-
-          padding = number / 2;
-          padding += unit;
-
-          pickerRef.current.style.left = "calc(-100% - " + padding + ")";
-        }
       } else {
-        if ("" !== widthManipulatedClass) setWidthManipulatedClass("");
         pickerRef.current.removeAttribute("style");
       }
 
@@ -293,17 +271,11 @@ const KirkiReactColorfulForm = (props) => {
       break;
   }
 
-  let formClassName = useHueMode
-    ? "kirki-control-form use-hue-mode"
-    : "kirki-control-form";
-  formClassName += widthManipulatedClass;
-  formClassName += choices.is_right_sided ? " picker-is-right-sided" : "";
-
   // Handle outside focus to close the picker popup.
   useFocusOutside(formRef, closePicker);
 
   // Handle outside click to close the picker popup.
-  useClickOutside(resetRef, pickerRef, closePicker);
+  useClickOutside(pickerRef, resetRef, closePicker);
 
   if (jQuery.wp && jQuery.wp.wpColorPicker) {
     const wpColorPickerSwatches =
@@ -321,64 +293,105 @@ const KirkiReactColorfulForm = (props) => {
     }
   }
 
+  const controlHeader = (
+    <>
+      {controlLabel}
+      <div
+        className="customize-control-notifications-container"
+        ref={props.setNotificationContainer}
+      />
+    </>
+  );
+
+  const usePositionFixed = "default" !== choices.labelStyle ? true : false;
+
+  let formClassName = useHueMode
+    ? "kirki-control-form use-hue-mode"
+    : "kirki-control-form";
+
+  let pickerContainerClassName = isPickerOpen
+    ? pickerComponent + " colorPickerContainer is-open"
+    : pickerComponent + " colorPickerContainer";
+
+  pickerContainerClassName += usePositionFixed ? " is-fixed" : "";
+
+  let pickerContainerStyle = {};
+
+  if (usePositionFixed) {
+    const panelWidth = control.container[0].parentNode.getBoundingClientRect().width;
+		const pickerWidth = pickerRef.current ? pickerRef.current.getBoundingClientRect().width : 0;
+		const padding = (panelWidth - pickerWidth) / 2;
+
+		pickerContainerStyle.left =
+      control.container[0].parentNode.offsetLeft + padding + "px";
+    pickerContainerStyle.top = control.container[0].offsetTop + 80 + "px";
+  }
+
+  const pickerTrigger = (
+    <>
+      <button
+        type="reset"
+        ref={resetRef}
+        className="kirki-control-reset"
+        onClick={handleReset}
+        style={{ display: isPickerOpen ? "flex" : "none" }}
+      >
+        <i className="dashicons dashicons-image-rotate"></i>
+      </button>
+
+      <KirkiReactColorfulCircle
+        pickerComponent={pickerComponent}
+        useHueMode={useHueMode}
+        color={inputValue}
+        isPickerOpen={isPickerOpen}
+        togglePickerHandler={togglePicker}
+      />
+    </>
+  );
+
   return (
-    <div className={formClassName} ref={formRef} tabIndex="1">
-      <div className="kirki-control-cols">
-        <div className="kirki-control-left-col">
-          {controlLabel}
-          <div
-            className="customize-control-notifications-container"
-            ref={props.setNotificationContainer}
-          />
-        </div>
-        <button
-          type="reset"
-					ref={resetRef}
-          className="kirki-control-reset"
-          onClick={handleReset}
-          style={{ display: isPickerOpen ? "flex" : "none" }}
+    <>
+      <div className={formClassName} ref={formRef} tabIndex="1">
+        {"tooltip" === choices.labelStyle ? (
+					<>
+          {pickerTrigger}
+          <div className="kirki-label-tooltip">{controlHeader}</div>
+        </>
+				) : (
+          <>
+            <div className="kirki-control-cols">
+              <div className="kirki-control-left-col">{controlHeader}</div>
+              <div className="kirki-control-right-col">{pickerTrigger}</div>
+            </div>
+          </>
+        )}
+
+        <div
+          ref={pickerRef}
+          className={pickerContainerClassName}
+          style={pickerContainerStyle}
         >
-          <i className="dashicons dashicons-image-rotate"></i>
-        </button>
-        <div className="kirki-control-right-col">
-          <KirkiReactColorfulCircle
+          {!useHueMode && (
+            <KirkiReactColorfulSwatches
+              colors={choices.swatches}
+              onClick={handleSwatchesClick}
+            />
+          )}
+
+          <KirkiPickerComponent
+            color={pickerValue}
+            onChange={handlePickerChange}
+          />
+
+          <KirkiReactColorfulInput
             pickerComponent={pickerComponent}
             useHueMode={useHueMode}
             color={inputValue}
-            isPickerOpen={isPickerOpen}
-            togglePickerHandler={togglePicker}
+            onChange={handleInputChange}
           />
         </div>
       </div>
-
-      <div
-        ref={pickerRef}
-        className={
-          isPickerOpen
-            ? pickerComponent + " colorPickerContainer is-open"
-            : pickerComponent + " colorPickerContainer"
-        }
-      >
-        {!useHueMode && (
-          <KirkiReactColorfulSwatches
-            colors={choices.swatches}
-            onClick={handleSwatchesClick}
-          />
-        )}
-
-        <KirkiPickerComponent
-          color={pickerValue}
-          onChange={handlePickerChange}
-        />
-
-        <KirkiReactColorfulInput
-          pickerComponent={pickerComponent}
-          useHueMode={useHueMode}
-          color={inputValue}
-          onChange={handleInputChange}
-        />
-      </div>
-    </div>
+    </>
   );
 };
 
