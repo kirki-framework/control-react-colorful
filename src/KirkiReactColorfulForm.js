@@ -192,6 +192,46 @@ const KirkiReactColorfulForm = (props) => {
 
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
+  const usePositionFixed = "tooltip" === choices.labelStyle ? true : false;
+
+  const getPickerContainerStyle = () => {
+    let pickerContainerStyle = {};
+
+    if (control.container[0].clientWidth < 250) {
+      pickerContainerStyle.width =
+        control.container[0].parentNode.firstElementChild.clientWidth + "px";
+    } else {
+      if (pickerContainerStyle.width) delete pickerContainerStyle.width;
+    }
+
+    if (!usePositionFixed) return pickerContainerStyle;
+
+    const panelWidth =
+      control.container[0].parentNode.getBoundingClientRect().width;
+    const pickerWidth = pickerRef.current
+      ? pickerRef.current.getBoundingClientRect().width
+      : 0;
+    const padding = (panelWidth - pickerWidth) / 2;
+
+    pickerContainerStyle.left =
+      control.container[0].parentNode.offsetLeft + padding + "px";
+
+    const notifItems = document.querySelectorAll(
+      "#customize-notifications-area li"
+    );
+
+    let additionalSpace = 80;
+
+    if (notifItems.length) {
+      additionalSpace += notifItems[0].clientHeight;
+    }
+
+    pickerContainerStyle.top =
+      control.container[0].offsetTop + additionalSpace + "px";
+
+    return pickerContainerStyle;
+  };
+
   const togglePicker = () => {
     if (isPickerOpen) {
       closePicker();
@@ -201,16 +241,8 @@ const KirkiReactColorfulForm = (props) => {
   };
 
   const openPicker = () => {
-    if (!isPickerOpen) {
-      if (control.container[0].clientWidth < 250) {
-        pickerRef.current.style.width =
-          control.container[0].parentNode.firstElementChild.clientWidth + "px";
-      } else {
-        pickerRef.current.removeAttribute("style");
-      }
-
-      setIsPickerOpen(true);
-    }
+    if (isPickerOpen) return;
+    setIsPickerOpen(true);
   };
 
   const closePicker = () => {
@@ -303,8 +335,6 @@ const KirkiReactColorfulForm = (props) => {
     </>
   );
 
-  const usePositionFixed = "tooltip" === choices.labelStyle ? true : false;
-
   let formClassName = useHueMode
     ? "kirki-control-form use-hue-mode"
     : "kirki-control-form";
@@ -314,21 +344,6 @@ const KirkiReactColorfulForm = (props) => {
     : pickerComponent + " colorPickerContainer";
 
   pickerContainerClassName += usePositionFixed ? " is-fixed" : "";
-
-  let pickerContainerStyle = {};
-
-  if (usePositionFixed) {
-    const panelWidth =
-      control.container[0].parentNode.getBoundingClientRect().width;
-    const pickerWidth = pickerRef.current
-      ? pickerRef.current.getBoundingClientRect().width
-      : 0;
-    const padding = (panelWidth - pickerWidth) / 2;
-
-    pickerContainerStyle.left =
-      control.container[0].parentNode.offsetLeft + padding + "px";
-    pickerContainerStyle.top = control.container[0].offsetTop + 80 + "px";
-  }
 
   const pickerTrigger = (
     <>
@@ -359,7 +374,9 @@ const KirkiReactColorfulForm = (props) => {
       pickerHeader = (
         <>
           {pickerTrigger}
-          <div className="kirki-label-tooltip">{controlHeader}</div>
+          {!isPickerOpen && (
+            <div className="kirki-label-tooltip">{controlHeader}</div>
+          )}
         </>
       );
       break;
@@ -392,7 +409,7 @@ const KirkiReactColorfulForm = (props) => {
         <div
           ref={pickerRef}
           className={pickerContainerClassName}
-          style={pickerContainerStyle}
+          style={getPickerContainerStyle()}
         >
           {!useHueMode && (
             <KirkiReactColorfulSwatches

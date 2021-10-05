@@ -104,6 +104,7 @@
 
     &.is-fixed {
       position: fixed;
+      right: auto;
       // The rest will be styled in JS.
     }
   }
@@ -285,6 +286,7 @@
 
   &[data-kirki-parent-control-type="kirki-multicolor"] {
     margin-right: 8px;
+    margin-bottom: 20px;
     padding-right: 0;
     width: 35px;
 
