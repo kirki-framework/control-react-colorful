@@ -203,19 +203,12 @@ const KirkiReactColorfulForm = (props) => {
   const getPickerContainerStyle = () => {
     let pickerContainerStyle = {};
 
-    if (control.container[0].clientWidth < 250) {
-      pickerContainerStyle.width =
-        control.container[0].parentNode.firstElementChild.clientWidth + "px";
-    } else {
-      if (pickerContainerStyle.width) delete pickerContainerStyle.width;
-    }
-
     if (!usePositionFixed) return pickerContainerStyle;
 
     const panelWidth =
-      control.container[0].parentNode.getBoundingClientRect().width;
+      control.container[0].parentNode.clientWidth;
     const pickerWidth = pickerRef.current
-      ? pickerRef.current.getBoundingClientRect().width
+      ? pickerRef.current.clientWidth
       : 0;
     const padding = (panelWidth - pickerWidth) / 2;
 
