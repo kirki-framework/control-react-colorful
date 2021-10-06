@@ -7,26 +7,26 @@ const KirkiReactColorfulInput = (props) => {
 
   const handleChange = useCallback(
     (e) => {
-      // @see https://regexr.com/39cgj (Thank you!)
+			const val = e.target.value;
+
+      // Thank you: https://regexr.com/39cgj
       const pattern = new RegExp(
-        /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6}|[a-f0-9]{8})\b|(?:rgb|hsl)a?([^)]*)/gi
+        /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6}|[a-f0-9]{8})\b|(?:rgb|hsl)a?\([^\)]*\)/
       );
 
-      if (e.target.value.match(pattern)) {
+      if (pattern.test(val)) {
         onChange(e.target.value); // Run onChange handler passed by `KirkiReactColorfulForm` component.
-      } else {
-        setValue(e.target.value);
       }
+
+      setValue(val);
     },
     [onChange]
   );
 
   // Update the local state when `color` property value is changed.
   useEffect(() => {
-    if (color !== value) {
-      // We don't need to convert the color since it's already handled in parent component.
-			setValue(color);
-    }
+    // We don't need to convert the color since it's already handled in parent component.
+    setValue(color);
   }, [color]);
 
   const pickersWithAlpha = [

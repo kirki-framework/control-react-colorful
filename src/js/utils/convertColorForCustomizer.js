@@ -21,7 +21,7 @@ const convertColorForCustomizer = (value, pickerComponent, formComponent) => {
 		 * 2. When formComponent is not defined but the "alpha" choice is not set or set to false (the old way).
 		 */
 		case 'HexColorPicker':
-			convertedValue = colord(value).toHex();
+			convertedValue = 'string' === typeof value && value.includes('#') ? value : colord(value).toHex();
 			break;
 
 		case 'RgbColorPicker':
@@ -30,7 +30,10 @@ const convertColorForCustomizer = (value, pickerComponent, formComponent) => {
 			break;
 
 		case 'RgbStringColorPicker':
-			convertedValue = colord(value).toRgbString();
+			convertedValue =
+        "string" === typeof value && value.includes("rgb(")
+          ? value
+          : colord(value).toRgbString();
 			break;
 
 		/**
@@ -45,7 +48,10 @@ const convertColorForCustomizer = (value, pickerComponent, formComponent) => {
 			if (rgba.a == 1) {
 				// When it uses the 2nd condition above, then the expected value is "hex".
 				if (!formComponent) {
-					convertedValue = colord(value).toHex();
+					convertedValue =
+            "string" === typeof value && value.includes("#")
+              ? value
+              : colord(value).toHex();
 				}
 			}
 
@@ -60,11 +66,17 @@ const convertColorForCustomizer = (value, pickerComponent, formComponent) => {
 			rgba = colord(value).toRgb();
 
 			if (rgba.a < 1) {
-				convertedValue = colord(value).toRgbString();
+				convertedValue =
+          "string" === typeof value && value.includes("rgba")
+            ? value
+            : colord(value).toRgbString();
 			} else {
 				// When it uses the 2nd condition above, then the expected value is "hex".
 				if (!formComponent) {
-					convertedValue = colord(value).toHex();
+					convertedValue =
+            "string" === typeof value && value.includes("#")
+              ? value
+              : colord(value).toHex();
 				} else {
 					convertedValue = colord(value).toRgbString();
 
@@ -84,7 +96,10 @@ const convertColorForCustomizer = (value, pickerComponent, formComponent) => {
 			break;
 
 		case 'HslStringColorPicker':
-			convertedValue = colord(value).toHslString();
+			convertedValue =
+        "string" === typeof value && value.includes("hsl(")
+          ? value
+          : colord(value).toHslString();
 			break;
 
 		case 'HslaColorPicker':
@@ -126,7 +141,10 @@ const convertColorForCustomizer = (value, pickerComponent, formComponent) => {
 			break;
 
 		default:
-			convertedValue = colord(value).toHex();
+			convertedValue =
+        "string" === typeof value && value.includes("#")
+          ? value
+          : colord(value).toHex();
 			break;
 	}
 

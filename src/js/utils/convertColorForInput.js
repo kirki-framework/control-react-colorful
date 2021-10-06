@@ -8,7 +8,7 @@ import { colord } from "colord";
  *
  * @returns {string} The converted value.
  */
-const convertColorForInput = (value, pickerComponent, formComponent) => {
+const 	convertColorForInput = (value, pickerComponent, formComponent) => {
 	let rgba;
 	let hsv;
 	let hsva;
@@ -21,15 +21,15 @@ const convertColorForInput = (value, pickerComponent, formComponent) => {
 		 * 2. When formComponent is not defined but the "alpha" choice is not set or set to false (the old way).
 		 */
 		case 'HexColorPicker':
-			convertedValue = colord(value).toHex();
+			convertedValue = 'string' === typeof value && value.includes('#') ? value : colord(value).toHex();
 			break;
 
 		case 'RgbColorPicker':
-			convertedValue = colord(value).toRgbString();
+			convertedValue = 'string' === typeof value && value.includes('rgb(') ? value : colord(value).toRgbString();
 			break;
 
 		case 'RgbStringColorPicker':
-			convertedValue = colord(value).toRgbString();
+			convertedValue = 'string' === typeof value && value.includes('rgba') ? value : colord(value).toRgbString();
 			break;
 
 		/**
@@ -41,11 +41,11 @@ const convertColorForInput = (value, pickerComponent, formComponent) => {
 			rgba = colord(value).toRgb();
 
 			if (rgba.a < 1) {
-				convertedValue = colord(value).toRgbString();
+				convertedValue = 'string' === typeof value && value.includes('rgba') ? value : colord(value).toRgbString();
 			} else {
 				// When it uses the 2nd condition above, then the expected value is "hex".
 				if (!formComponent) {
-					convertedValue = colord(value).toHex();
+					convertedValue = 'string' === typeof value && value.includes('#') ? value : colord(value).toHex();
 				} else {
 					convertedValue = colord(value).toRgbString();
 
@@ -69,7 +69,7 @@ const convertColorForInput = (value, pickerComponent, formComponent) => {
 
 			// When it uses the 2nd condition above, then the expected value is "hex".
 			if (rgba.a == 1 && !formComponent) {
-				convertedValue = colord(value).toHex();
+				convertedValue = 'string' === typeof value && value.includes('#') ? value : colord(value).toHex();
 			} else {
 				convertedValue = colord(value).toRgbString();
 
@@ -83,11 +83,11 @@ const convertColorForInput = (value, pickerComponent, formComponent) => {
 			break;
 
 		case 'HslColorPicker':
-			convertedValue = colord(value).toHslString();
+			convertedValue = 'string' === typeof value && value.includes('hsl(') ? value : colord(value).toHslString();
 			break;
 
 		case 'HslStringColorPicker':
-			convertedValue = colord(value).toHslString();
+			convertedValue = 'string' === typeof value && value.includes('hsl(') ? value : colord(value).toHslString();
 			break;
 
 		case 'HslaColorPicker':

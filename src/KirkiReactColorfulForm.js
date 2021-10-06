@@ -47,13 +47,19 @@ const KirkiReactColorfulForm = (props) => {
 
   const parseInputValue = (value) => {
     if ("" === value) return "";
+
     return useHueMode
       ? parseHueModeValue(value)
-      : convertColorForInput(value, pickerComponent, choices.formComponent);
+      : convertColorForInput(
+          value,
+          pickerComponent,
+          choices.formComponent
+        ).replace(";", "");
   };
 
   const parseCustomizerValue = (value) => {
     if ("" === value) return "";
+
     return convertColorForCustomizer(
       value,
       pickerComponent,
