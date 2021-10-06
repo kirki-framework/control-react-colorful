@@ -198,18 +198,15 @@ const KirkiReactColorfulForm = (props) => {
 
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
-  const usePositionFixed = "tooltip" === choices.labelStyle ? true : false;
+  const usePositionFixed = "defualt" !== choices.labelStyle ? true : false;
 
   const getPickerContainerStyle = () => {
     let pickerContainerStyle = {};
 
     if (!usePositionFixed) return pickerContainerStyle;
 
-    const panelWidth =
-      control.container[0].parentNode.clientWidth;
-    const pickerWidth = pickerRef.current
-      ? pickerRef.current.clientWidth
-      : 0;
+    const panelWidth = control.container[0].parentNode.clientWidth;
+    const pickerWidth = pickerRef.current ? pickerRef.current.clientWidth : 0;
     const padding = (panelWidth - pickerWidth) / 2;
 
     pickerContainerStyle.left =
@@ -223,6 +220,10 @@ const KirkiReactColorfulForm = (props) => {
 
     if (notifItems.length) {
       additionalSpace += notifItems[0].clientHeight + 5;
+    }
+
+    if ("top" === choices.labelStyle) {
+      additionalSpace += 20;
     }
 
     pickerContainerStyle.top =

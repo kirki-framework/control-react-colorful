@@ -104,6 +104,7 @@
     &.is-fixed {
       position: fixed;
       right: auto;
+      width: 265px;
       // The rest will be styled in JS.
     }
   }
