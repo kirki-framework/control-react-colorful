@@ -222,7 +222,7 @@ const KirkiReactColorfulForm = (props) => {
     let additionalSpace = 80;
 
     if (notifItems.length) {
-      additionalSpace += notifItems[0].clientHeight;
+      additionalSpace += notifItems[0].clientHeight + 5;
     }
 
     pickerContainerStyle.top =
