@@ -21,6 +21,7 @@ import convertColorForCustomizer from "./js/utils/convertColorForCustomizer";
 import convertColorForInput from "./js/utils/convertColorForInput";
 import useClickOutside from "./js/hooks/useClickOutside";
 import useFocusOutside from "./js/hooks/useFocusOutside";
+import useWindowResize from "./js/hooks/useWindowResize";
 import KirkiReactColorfulCircle from "./js/components/KirkiReactColorfulCIrcle";
 import { colord } from "colord";
 
@@ -161,13 +162,12 @@ const KirkiReactColorfulForm = (props) => {
     saveToCustomizer(initialColor);
   };
 
-  /**
-   * Function to run on swatches click.
-   *
-   * @param {string} swatchColor The value from the clicked color swatch.
-   */
   const handleSwatchesClick = (swatchColor) => {
     saveToCustomizer(swatchColor);
+  };
+
+  const handleWindowResize = () => {
+    setPickerContainerStyle(getPickerContainerStyle());
   };
 
   let controlLabel = (
@@ -201,10 +201,20 @@ const KirkiReactColorfulForm = (props) => {
 
   const usePositionFixed = "default" !== choices.labelStyle ? true : false;
 
+  const [pickerContainerStyle, setPickerContainerStyle] = useState({});
+
   const getPickerContainerStyle = () => {
     let pickerContainerStyle = {};
 
     if (!usePositionFixed) return pickerContainerStyle;
+
+    let padding = window.getComputedStyle(
+      control.container[0].parentNode
+    ).paddingLeft;
+    padding = parseInt(padding, 10) * 2;
+
+    pickerContainerStyle.width =
+      control.container[0].parentNode.getBoundingClientRect().width - padding;
 
     const controlLeftOffset = (control.container[0].offsetLeft - 9) * -1;
 
@@ -230,6 +240,7 @@ const KirkiReactColorfulForm = (props) => {
   const openPicker = () => {
     if (isPickerOpen) return;
 
+    setPickerContainerStyle(getPickerContainerStyle());
     convertInputValueTo6Digits();
     setIsPickerOpen(true);
   };
@@ -292,6 +303,8 @@ const KirkiReactColorfulForm = (props) => {
       KirkiPickerComponent = HexColorPicker;
       break;
   }
+
+  useWindowResize(handleWindowResize);
 
   // Handle outside focus to close the picker popup.
   useFocusOutside(formRef, closePicker);
@@ -403,7 +416,7 @@ const KirkiReactColorfulForm = (props) => {
         <div
           ref={pickerRef}
           className={pickerContainerClassName}
-          style={getPickerContainerStyle()}
+          style={pickerContainerStyle}
         >
           {!useHueMode && (
             <KirkiReactColorfulSwatches

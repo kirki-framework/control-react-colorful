@@ -100,13 +100,6 @@
       transition: all 0.2s ease 10ms; // When we open the picker popup, the top offset is changed, so we need to wait a bit.
       transition-property: opacity, visibility; // Yes, only opacity and visibility please.
     }
-
-    &.is-fixed {
-      position: fixed;
-      right: auto;
-      width: 258px;
-      // The rest will be styled in JS.
-    }
   }
 
   .react-colorful {
@@ -282,10 +275,6 @@
       opacity: 1;
       visibility: visible;
     }
-  }
-
-  :not(.has-default-label-style) .colorPickerContainer {
-    width: 258px;
   }
 
   &[data-kirki-parent-control-type="kirki-multicolor"] {
