@@ -43,7 +43,6 @@ const KirkiReactColorfulForm = (props) => {
     hueValue = hueValue || parseEmptyValue();
     hueValue = hueValue < 0 ? 0 : hueValue;
 
-
     return hueValue > 360 ? 360 : hueValue;
   };
 
@@ -351,7 +350,11 @@ const KirkiReactColorfulForm = (props) => {
       <KirkiReactColorfulCircle
         pickerComponent={pickerComponent}
         useHueMode={useHueMode}
-        color={inputValue}
+        color={
+          !useHueMode
+            ? inputValue
+            : colord({ h: inputValue, s: 100, l: 50 }).toHex()
+        }
         isPickerOpen={isPickerOpen}
         togglePickerHandler={togglePicker}
       />

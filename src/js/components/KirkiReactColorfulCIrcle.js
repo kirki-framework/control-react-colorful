@@ -41,12 +41,7 @@ const KirkiReactColorfulCircle = (props) => {
         onClick={props.togglePickerHandler}
         style={styles.triggerButton}
       >
-        {!props.useHueMode && (
-          <div
-            className="kirki-color-preview"
-            style={styles.colorPreview}
-          ></div>
-        )}
+        <div className="kirki-color-preview" style={styles.colorPreview}></div>
       </button>
     </div>
   );
