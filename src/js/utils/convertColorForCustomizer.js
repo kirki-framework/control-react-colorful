@@ -36,31 +36,15 @@ const convertColorForCustomizer = (value, pickerComponent, formComponent) => {
           : colord(value).toRgbString();
 			break;
 
-		/**
-		 * The RgbaColorPicker is used by these condition:
-		 * 1. When formComponent is defined with RgbaColorPicker as the value.
-		 * 2. When formComponent is not defined but the "alpha" choice is set to true and "save_as" value is "array".
-		 */
 		case 'RgbaColorPicker':
 			rgba = colord(value).toRgb();
 			convertedValue = rgba;
-
-			if (rgba.a == 1) {
-				// When it uses the 2nd condition above, then the expected value is "hex".
-				if (!formComponent) {
-					convertedValue =
-            "string" === typeof value && value.includes("#")
-              ? value
-              : colord(value).toHex();
-				}
-			}
-
 			break;
 
 		/**
 		 * The RgbaStringColorPicker is used by these condition:
 		 * 1. When formComponent is defined with RgbaColorPicker as the value.
-		 * 2. When formComponent is not defined but the "alpha" choice is set to true without the "save_as" choice (old way) / "save_as" choice is set to false.
+		 * 2. When formComponent is not defined but the "alpha" choice is set to true.
 		 */
 		case 'RgbaStringColorPicker':
 			rgba = colord(value).toRgb();

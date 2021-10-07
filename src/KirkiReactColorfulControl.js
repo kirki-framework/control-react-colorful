@@ -64,17 +64,11 @@ const KirkiReactColorfulControl = wp.customize.Control.extend({
     let pickerComponent;
 
     if (choices.formComponent) {
-      // The "save_as" choice is ignored if formComponent is specified.
       pickerComponent = choices.formComponent;
     } else {
       pickerComponent = choices.alpha
         ? "RgbaStringColorPicker"
         : "HexColorPicker";
-
-      // The "save_as" choice is ignored for HexColorPicker.
-      if (choices.saveAs && "array" === choices.saveAs && choices.alpha) {
-        pickerComponent = "RgbaColorPicker";
-      }
     }
 
     pickerComponent = useHueMode ? "HueColorPicker" : pickerComponent;
