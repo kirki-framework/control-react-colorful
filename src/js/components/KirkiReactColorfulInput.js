@@ -7,7 +7,13 @@ const KirkiReactColorfulInput = (props) => {
 
   const handleChange = useCallback(
     (e) => {
-			const val = e.target.value;
+			let val = e.target.value;
+
+			if (2 === val.length) {
+				if (!val.includes('#') && !val.includes('rg') && !val.includes('hs')) {
+					val = '#' + val;
+				}
+			}
 
       // Thank you: https://regexr.com/39cgj
       const pattern = new RegExp(
