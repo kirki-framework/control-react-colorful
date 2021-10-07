@@ -198,36 +198,16 @@ const KirkiReactColorfulForm = (props) => {
 
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
-  const usePositionFixed = "defualt" !== choices.labelStyle ? true : false;
+  const usePositionFixed = "default" !== choices.labelStyle ? true : false;
 
   const getPickerContainerStyle = () => {
     let pickerContainerStyle = {};
 
     if (!usePositionFixed) return pickerContainerStyle;
 
-    const panelWidth = control.container[0].parentNode.clientWidth;
-    const pickerWidth = pickerRef.current ? pickerRef.current.clientWidth : 0;
-    const padding = (panelWidth - pickerWidth) / 2;
+    const controlLeftOffset = (control.container[0].offsetLeft - 9) * -1;
 
-    pickerContainerStyle.left =
-      control.container[0].parentNode.offsetLeft + padding + "px";
-
-    const notifItems = document.querySelectorAll(
-      "#customize-notifications-area li"
-    );
-
-    let additionalSpace = 80;
-
-    if (notifItems.length) {
-      additionalSpace += notifItems[0].clientHeight + 5;
-    }
-
-    if ("top" === choices.labelStyle) {
-      additionalSpace += 20;
-    }
-
-    pickerContainerStyle.top =
-      control.container[0].offsetTop + additionalSpace + "px";
+    pickerContainerStyle.left = controlLeftOffset + "px";
 
     return pickerContainerStyle;
   };
@@ -339,11 +319,11 @@ const KirkiReactColorfulForm = (props) => {
     ? "kirki-control-form use-hue-mode"
     : "kirki-control-form";
 
+  formClassName += " has-" + choices.labelStyle + "-label-style";
+
   let pickerContainerClassName = isPickerOpen
     ? pickerComponent + " colorPickerContainer is-open"
     : pickerComponent + " colorPickerContainer";
-
-  pickerContainerClassName += usePositionFixed ? " is-fixed" : "";
 
   const pickerTrigger = (
     <>
