@@ -7,13 +7,17 @@ const KirkiReactColorfulInput = (props) => {
 
   const handleChange = useCallback(
     (e) => {
-			let val = e.target.value;
+      let val = e.target.value;
 
-			if (2 === val.length) {
-				if (!val.includes('#') && !val.includes('rg') && !val.includes('hs')) {
-					val = '#' + val;
-				}
-			}
+      if (2 === val.length) {
+        if (!val.includes("#") && !val.includes("rg") && !val.includes("hs")) {
+          val = "#" + val;
+        }
+      } else if (3 === val.length || 6 === val.length) {
+        if (!val.includes("#") && !val.includes("rg") && !val.includes("hs")) {
+          val = "#" + val;
+        }
+      }
 
       // Thank you: https://regexr.com/39cgj
       const pattern = new RegExp(
@@ -21,7 +25,7 @@ const KirkiReactColorfulInput = (props) => {
       );
 
       if (pattern.test(val)) {
-        onChange(e.target.value); // Run onChange handler passed by `KirkiReactColorfulForm` component.
+        onChange(val); // Run onChange handler passed by `KirkiReactColorfulForm` component.
       }
 
       setValue(val);
