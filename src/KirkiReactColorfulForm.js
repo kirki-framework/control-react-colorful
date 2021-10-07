@@ -43,6 +43,7 @@ const KirkiReactColorfulForm = (props) => {
     hueValue = hueValue || parseEmptyValue();
     hueValue = hueValue < 0 ? 0 : hueValue;
 
+
     return hueValue > 360 ? 360 : hueValue;
   };
 
@@ -122,7 +123,7 @@ const KirkiReactColorfulForm = (props) => {
        * If there is value.h, then value is set from the picker.
        * Otherwise, value is set from the input or the customizer.
        */
-      value = value.h ? value.h : value;
+      value = value.h || 0 === value.h ? value.h : value;
       value = parseHueModeValue(value);
     } else {
       value = parseCustomizerValue(value);
