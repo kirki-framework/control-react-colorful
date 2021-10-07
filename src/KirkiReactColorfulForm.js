@@ -22,6 +22,7 @@ import convertColorForInput from "./js/utils/convertColorForInput";
 import useClickOutside from "./js/hooks/useClickOutside";
 import useFocusOutside from "./js/hooks/useFocusOutside";
 import KirkiReactColorfulCircle from "./js/components/KirkiReactColorfulCIrcle";
+import { colord } from "colord";
 
 /**
  * The form component of Kirki React Colorful.
@@ -212,6 +213,12 @@ const KirkiReactColorfulForm = (props) => {
     return pickerContainerStyle;
   };
 
+  const convertInputValueTo6Digits = () => {
+    if (4 === inputValue.length && inputValue.includes("#")) {
+      setInputValue(colord(inputValue).toHex());
+    }
+  };
+
   const togglePicker = () => {
     if (isPickerOpen) {
       closePicker();
@@ -222,13 +229,16 @@ const KirkiReactColorfulForm = (props) => {
 
   const openPicker = () => {
     if (isPickerOpen) return;
+
+    convertInputValueTo6Digits();
     setIsPickerOpen(true);
   };
 
   const closePicker = () => {
-    if (isPickerOpen) {
-      setIsPickerOpen(false);
-    }
+    if (!isPickerOpen) return;
+
+    setIsPickerOpen(false);
+    setTimeout(convertInputValueTo6Digits, 200);
   };
 
   let KirkiPickerComponent;
