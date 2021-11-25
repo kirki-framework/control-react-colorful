@@ -351,7 +351,7 @@ const KirkiReactColorfulForm = (props) => {
   const pickerTrigger = (
     <>
       <button
-        type="reset"
+        type="button"
         ref={resetRef}
         className="kirki-control-reset"
         onClick={handleReset}
