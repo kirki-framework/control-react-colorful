@@ -1,50 +1,50 @@
 {
-  "name": "control-react-colorful",
-  "version": "1.0.0",
-  "description": "Development toolkit for Kirki's control-react-colorful",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kirki-framework/control-react-colorful.git"
-  },
-  "keywords": [
-    "kirki-react-colorful"
-  ],
-  "author": "Kirki Framework",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/kirki-framework/control-react-colorful/issues"
-  },
-  "homepage": "https://github.com/kirki-framework/control-react-colorful#readme",
-  "dependencies": {
-    "react": "17.*",
-    "react-dom": "17.*",
-    "colord": "2.*",
-    "react-colorful": "5.*",
-    "reactcss": "1.*"
-  },
-  "devDependencies": {
-    "@babel/preset-react": "7.*",
-    "@parcel/transformer-sass": "^2.0.0-rc.0",
-    "parcel": "^2.0.0-rc.0"
-  },
-  "alias": {
-    "jquery": {
-      "global": "jQuery"
+    "name": "control-react-colorful",
+    "version": "1.0.6",
+    "description": "Development toolkit for Kirki's control-react-colorful",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kirki-framework/control-react-colorful.git"
     },
-    "wp": {
-      "global": "wp"
+    "keywords": [
+        "kirki-react-colorful"
+    ],
+    "author": "Kirki Framework",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/kirki-framework/control-react-colorful/issues"
     },
-    "react": {
-      "global": "React"
+    "homepage": "https://github.com/kirki-framework/control-react-colorful#readme",
+    "dependencies": {
+        "react": "17.*",
+        "react-dom": "17.*",
+        "colord": "2.*",
+        "react-colorful": "5.*",
+        "reactcss": "1.*"
     },
-    "react-dom": {
-      "global": "ReactDOM"
+    "devDependencies": {
+        "@babel/preset-react": "7.*",
+        "@parcel/transformer-sass": "^2.0.0-rc.0",
+        "parcel": "^2.0.0-rc.0"
+    },
+    "alias": {
+        "jquery": {
+            "global": "jQuery"
+        },
+        "wp": {
+            "global": "wp"
+        },
+        "react": {
+            "global": "React"
+        },
+        "react-dom": {
+            "global": "ReactDOM"
+        }
+    },
+    "browserslist": "> 0.5%, last 2 versions, not dead",
+    "scripts": {
+        "build": "parcel build  src/control.js src/preview.js --dist-dir dist",
+        "dev": "parcel build  src/control.js src/preview.js --no-optimize --dist-dir dist",
+        "watch": "parcel watch src/control.js src/preview.js --dist-dir dist"
     }
-  },
-  "browserslist": "> 0.5%, last 2 versions, not dead",
-  "scripts": {
-    "build": "parcel build  src/control.js src/preview.js --dist-dir dist",
-    "dev": "parcel build  src/control.js src/preview.js --no-optimize --dist-dir dist",
-    "watch": "parcel watch src/control.js src/preview.js --dist-dir dist"
-  }
 }
