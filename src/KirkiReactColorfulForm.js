@@ -22,7 +22,7 @@ import convertColorForInput from "./js/utils/convertColorForInput";
 import useClickOutside from "./js/hooks/useClickOutside";
 import useFocusOutside from "./js/hooks/useFocusOutside";
 import useWindowResize from "./js/hooks/useWindowResize";
-import KirkiReactColorfulCircle from "./js/components/KirkiReactColorfulCIrcle";
+import KirkiReactColorfulCircle from "./js/components/KirkiReactColorfulCircle";
 import { colord } from "colord";
 
 /**
