@@ -1,6 +1,6 @@
 {
     "name": "control-react-colorful",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "description": "Development toolkit for Kirki's control-react-colorful",
     "repository": {
         "type": "git",
@@ -22,6 +22,11 @@
         "react-dom": "^17.0.2",
         "reactcss": "^1.2.3"
     },
+    "devDependencies": {
+        "@babel/preset-react": "^7.16.7",
+        "@parcel/transformer-sass": "2.2.1",
+        "parcel": "2.2.1"
+    },
     "alias": {
         "jquery": {
             "global": "jQuery"
@@ -37,13 +42,13 @@
         }
     },
     "browserslist": "> 0.5%, last 2 versions, not dead",
+    "source": [
+        "src/control.js",
+        "src/preview.js"
+    ],
     "scripts": {
-        "build": "parcel build  src/control.js src/preview.js --dist-dir dist",
-        "dev": "parcel build  src/control.js src/preview.js --no-optimize --dist-dir dist",
-        "watch": "parcel watch src/control.js src/preview.js --dist-dir dist"
-    },
-    "devDependencies": {
-        "@babel/preset-react": "^7.16.7",
-        "parcel": "^2.2.1"
+        "build": "parcel build",
+        "dev": "parcel build --no-optimize",
+        "watch": "parcel watch"
     }
 }
