@@ -81,8 +81,11 @@
 		if ('kirki-react-colorful' !== controlType) return styles;
 		if ('string' === typeof value || 'number' === typeof value) return styles;
 
+		const prefix = output.prefix ? output.prefix : '';
+		const suffix = output.suffix ? output.suffix : "";
+
 		styles += output.element + '{'
-			+ output.property + ': ' + generateStringValue(value) + ';\
+			+ output.property + ': ' + prefix + generateStringValue(value) + suffix + ';\
 		}';
 
 		return styles;
