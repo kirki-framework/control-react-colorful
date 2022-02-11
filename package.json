@@ -23,32 +23,21 @@
         "reactcss": "^1.2.3"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.16.7",
-        "@parcel/transformer-sass": "2.2.1",
-        "parcel": "2.2.1"
-    },
-    "alias": {
-        "jquery": {
-            "global": "jQuery"
-        },
-        "wp": {
-            "global": "wp"
-        },
-        "react": {
-            "global": "React"
-        },
-        "react-dom": {
-            "global": "ReactDOM"
-        }
+        "@babel/core": "7.*",
+        "@babel/preset-env": "7.*",
+        "@babel/preset-react": "7.*",
+        "babel-loader": "8.*",
+        "css-loader": "6.*",
+        "mini-css-extract-plugin": "2.*",
+        "sass": "1.*",
+        "sass-loader": "12.*",
+        "webpack": "5.*",
+        "webpack-cli": "4.*"
     },
     "browserslist": "> 0.5%, last 2 versions, not dead",
-    "source": [
-        "src/control.js",
-        "src/preview.js"
-    ],
     "scripts": {
-        "build": "parcel build",
-        "dev": "parcel build --no-optimize",
-        "watch": "parcel watch"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack --mode production",
+        "dev": "webpack --mode development"
     }
 }
