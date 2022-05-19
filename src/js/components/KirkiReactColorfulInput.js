@@ -26,7 +26,7 @@ const KirkiReactColorfulInput = (props) => {
 				/(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6}|[a-f0-9]{8})\b|(?:rgb|hsl)a?\([^\)]*\)/
 			);
 
-			if (pattern.test(val)) {
+			if ("" === val || pattern.test(val)) {
 				onChange(val); // Run onChange handler passed by `KirkiReactColorfulForm` component.
 			}
 
