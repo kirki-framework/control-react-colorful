@@ -9,16 +9,14 @@
 	 * @return bool
 	 */
 	const isNumeric = (str) => {
-
 		// Number is a numeric.
-		if ('number' === typeof str) return true;
+		if ("number" === typeof str) return true;
 
 		// We only process strings.
-		if ('string' !== typeof str) return false;
+		if ("string" !== typeof str) return false;
 
 		// Use type coercion to parse the entirety of the string (`parseFloat` alone does not do this) and ensure strings of whitespace fail.
-		return (!isNaN(str) && !isNaN(parseFloat(str)));
-
+		return !isNaN(str) && !isNaN(parseFloat(str));
 	};
 
 	/**
@@ -28,42 +26,42 @@
 	 * @return string
 	 */
 	const generateStringValue = (value) => {
-
 		alphaEnabled = false;
 
 		if (value.r || value.g || value.b) {
-			colorMode = "undefined" !== typeof value.a ? 'rgba' : 'rgb';
-			alphaEnabled = 'rgba' === colorMode ? true : alphaEnabled;
+			colorMode = "undefined" !== typeof value.a ? "rgba" : "rgb";
+			alphaEnabled = "rgba" === colorMode ? true : alphaEnabled;
 
 			pos1 = value.r;
 			pos2 = value.g;
 			pos3 = value.b;
-			pos4 = 'rgba' === colorMode ? value.a : 1;
+			pos4 = "rgba" === colorMode ? value.a : 1;
 		} else if (value.h || value.s) {
 			pos1 = value.h;
 
 			if (value.l) {
-				colorMode = "undefined" !== typeof value.a ? 'hsla' : 'hsl';
-				pos2 = isNumeric(value.l) ? value.l + '%' : value.l;
+				colorMode = "undefined" !== typeof value.a ? "hsla" : "hsl";
+				pos2 = isNumeric(value.l) ? value.l + "%" : value.l;
 			} else if (value.v) {
-				colorMode = "undefined" !== typeof value.a ? 'hvla' : 'hvl';
-				pos2 = isNumeric(value.v) ? value.v + '%' : value.v;
+				colorMode = "undefined" !== typeof value.a ? "hvla" : "hvl";
+				pos2 = isNumeric(value.v) ? value.v + "%" : value.v;
 			}
 
-			alphaEnabled = 'hsla' === colorMode || 'hsva' === colorMode ? true : alphaEnabled;
+			alphaEnabled =
+				"hsla" === colorMode || "hsva" === colorMode ? true : alphaEnabled;
 
-			pos3 = isNumeric(value) ? value.s + '%' : value.s;
+			pos3 = isNumeric(value) ? value.s + "%" : value.s;
 			pos4 = alphaEnabled ? value.a : 1;
 		}
 
 		if (alphaEnabled) {
-			formattedValue = colorMode + '(' + pos1 + ', ' + pos2 + ', ' + pos3 + ', ' + pos4 + ')';
+			formattedValue =
+				colorMode + "(" + pos1 + ", " + pos2 + ", " + pos3 + ", " + pos4 + ")";
 		} else {
-			formattedValue = colorMode + '(' + pos1 + ', ' + pos2 + ', ' + pos3 + ')';
+			formattedValue = colorMode + "(" + pos1 + ", " + pos2 + ", " + pos3 + ")";
 		}
 
 		return formattedValue;
-
 	};
 
 	/**
@@ -77,21 +75,26 @@
 	 * @return {string} The filtered styles.
 	 */
 	const stylesOutput = (styles, value, output, controlType) => {
+		if ("kirki-react-colorful" !== controlType) return styles;
+		if ("string" === typeof value || "number" === typeof value) return styles;
 
-		if ('kirki-react-colorful' !== controlType) return styles;
-		if ('string' === typeof value || 'number' === typeof value) return styles;
-
-		const prefix = output.prefix ? output.prefix : '';
+		const prefix = output.prefix ? output.prefix : "";
 		const suffix = output.suffix ? output.suffix : "";
 
-		styles += output.element + '{'
-			+ output.property + ': ' + prefix + generateStringValue(value) + suffix + ';\
-		}';
+		styles +=
+			output.element +
+			"{" +
+			output.property +
+			": " +
+			prefix +
+			generateStringValue(value) +
+			suffix +
+			";\
+		}";
 
 		return styles;
-
 	};
 
 	// Hook the function to the `kirkiPostMessageStylesOutput` filter.
-	wp.hooks.addFilter('kirkiPostMessageStylesOutput', 'kirki', stylesOutput);
+	wp.hooks.addFilter("kirkiPostMessageStylesOutput", "kirki", stylesOutput);
 })();
