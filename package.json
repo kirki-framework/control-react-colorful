@@ -25,7 +25,8 @@
     "devDependencies": {
         "@babel/preset-react": "^7.17.12",
         "@parcel/transformer-sass": "^2.5.0",
-        "parcel": "^2.5.0"
+        "parcel": "^2.5.0",
+        "prettier": "npm:wp-prettier@^2.6.2-beta-1"
     },
     "browserslist": "> 0.5%, last 2 versions, not dead",
     "alias": {
