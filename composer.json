@@ -1,7 +1,6 @@
 {
     "name": "kirki-framework/control-react-colorful",
     "type": "library",
-    "version": "1.0.16",
     "description": "Color control for the Kirki Customizer framework using react-colorful.",
     "keywords": [
         "wordpress",
